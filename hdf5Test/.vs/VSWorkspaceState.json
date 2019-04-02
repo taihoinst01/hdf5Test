@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\hdf5Test",
+    "\\hdf5Test\\app",
+    "\\hdf5Test\\app\\static",
+    "\\hdf5Test\\static",
+    "\\hdf5Test\\static\\h5"
+  ],
+  "SelectedNode": "\\hdf5Test\\db.sqlite3",
+  "PreviewInSolutionExplorer": false
+}

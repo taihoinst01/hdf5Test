@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDF5</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/header.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/leftSideBar.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/content.css' %}" />
+    <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
+    <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
+    <script src="{% static 'app/scripts/bootstrap.js' %}"></script>
+    <script src="{% static 'app/scripts/respond.js' %}"></script>
+</head>
+
+<body>
+    <div id="header">
+        <div id="lnb" class="lnb">
+            <div class="gnb_box_left">
+            <a href="/" title="HDF5 Service Web"><h1><span class="blind">HDF5</span></h1></a>
+            </div>
+            <div class="gnb_box">
+                <div class="gnb_infor">
+                    <a href="#" title="회원정보" id="btn_openUserPop" onclick="return false;">
+                        <span>USER_NAME</span>
+                    </a>
+                    <span class="gnb_infor_img"></span>
+                </div>
+                <a href="/logout" title="로그아웃" onclick="return false;">
+                    <b class="b_logout">Logout</b>
+                    <div class="btn_logout">
+                        <span class="blind">로그아웃</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="lnb-wrap">
+        <div class="lnb-box">
+            <ul>
+                <!--<a href="/invoiceRegistration"><li class="menu01">문서업로드</li></a>-->
+                <a href="/"><li class="menu01">H5</li></a>
+                <a href="/dirFileRead"><li class="menu02">DIR</li></a>
+            </ul>
+        </div>
+    </div>
+    
+{% block content %}{% endblock %}
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

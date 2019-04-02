@@ -1,0 +1,33 @@
+﻿
+
+
+{% extends "app/layout.html" %}
+{% block headerBdy %}
+<div id="header">
+    <div id="lnb" class="lnb">
+        <a href="/" title="HDF5 Service Web"><h1><span class="blind">HDF5</span></h1></a>
+        <!-- GNB -->
+        <div class="gnb_box">
+            <!--
+            <div class="gnb_connectionday">
+                <input type="text" class="totalSearch" id="totalSearch" placeholder="Search..." />
+            </div>
+            -->
+
+            <div class="gnb_infor">
+                <a href="#" title="회원정보" id="btn_openUserPop" onclick="return false;">
+                    <span>USER_NAME</span>
+                </a>
+                <span class="gnb_infor_img"></span>
+            </div>
+            <a href="/logout" title="로그아웃" onclick="return false;">
+                <b class="b_logout">Logout</b>
+                <div class="btn_logout">
+                    <span class="blind">로그아웃</span>
+                </div>
+            </a>
+        </div>
+        <!-- // GNB -->
+    </div>
+</div>
+{% endblock %}

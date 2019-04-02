@@ -1,0 +1,36 @@
+#lnb-wrap {
+    position: fixed;
+    width: 125px;
+    /* height: 869px; */
+    height: calc(100% - 70px);
+    background-color: #1A1A1A;
+    display: flex;
+    flex-direction: column;
+    top: 70px;
+    z-index: 200;
+    /* margin-top: 69px; */
+}
+
+dl, ul, ol, li {
+    list-style: none;
+}
+
+.lnb-box {
+}
+
+    .lnb-box ul {
+        padding-left:0 !important;
+    }
+        .lnb-box ul a li {
+            display: block;
+            width: 125px;
+            padding-top: 20px;
+            padding-bottom: 5px;
+            color: white;
+            font-family: 'NanumGothicB';
+            text-align: center;
+        }
+
+            .lnb-box ul a li:hover {
+                background-color: #4d5059;
+            }
