@@ -21,11 +21,11 @@ urlpatterns = [
     url(r'^about$', app.views.about, name='about'),
     
     url(r'^dirFileRead$', app.views.dirFileReadFnc, name='dirFileReadFnc'),
+    url(r'^crawlerResult$', app.views.crawlerResultFnc, name='crawlerResultFnc'),
     
     #ajax post
     url(r'^getImage/$', app.views.getImageFnc, name='getImageFnc'),
     url(r'^getImageByDir/$', app.views.getImageByDirFnc, name='getImageByDirFnc'),
-    url(r'^crawlerResult/$', app.views.crawlerResultFnc, name='crawlerResultFnc'),
 
     url(r'^login/$',
         django.contrib.auth.views.login,
