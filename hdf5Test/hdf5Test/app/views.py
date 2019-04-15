@@ -267,3 +267,16 @@ def about(request):
             'year':datetime.now().year,
         }
     )
+
+def crawlerResultFnc(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/crawlerResult.html',
+        {
+            'title':'About',
+            'message':'Your application description page.',
+            'year':datetime.now().year,
+        }
+    )
