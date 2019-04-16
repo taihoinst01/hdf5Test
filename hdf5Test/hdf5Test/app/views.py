@@ -22,6 +22,8 @@ import time
 import os
 from glob import glob
 import fnmatch
+import requests 
+from bs4 import BeautifulSoup
 import psycopg2 as pg2
 
 def home(request):
@@ -280,6 +282,45 @@ def crawlerResultPage(request):
             'message':'Your application description page.',
             'year':datetime.now().year,
         }
+    )
+def crawling(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/crawling.html',
+        {
+            'title':'About',
+            'message':'Your application description page.',
+            'year':datetime.now().year,
+        }
+    )
+
+
+def webcrawlerStart(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    resultlist = webcrawlerApp();
+    data = {
+            'success': True,
+            'result' : resultlist
+        }
+    return JsonResponse(data)
+
+def webcrawlerApp():
+    cnt = 0
+    pageNum = 100
+    resultlist = [];
+    while cnt<=pageNum:
+       r = requests.get('http://minishop.gmarket.co.kr/cam365/List?Title=Best%20Item&CategoryType=General&SortType=MostPopular&DisplayType=List&Page='+str(cnt)+'&PageSize=60&IsFreeShipping=False&HasDiscount=False&HasStamp=False&HasMileage=False&IsInternationalShipping=False&MinPrice=36890&MaxPrice=912120#listTop')
+       html = r.text
+       soup = BeautifulSoup(html, 'html.parser')
+       titles = soup.select('.sbj') 
+       for title in titles:
+            resultlist.append(title.text);
+       cnt += 1
+        
+    return resultlist;
     )
 
 

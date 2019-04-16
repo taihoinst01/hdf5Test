@@ -1,0 +1,77 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+<div id="content">
+    <div class="title">
+        <div class="content_title_icon content_icon"></div>
+        <div class="content_title1">Crawler </div>
+    </div>
+    <div class="crawler_line"></div>
+    <div class="content_main" style="height : 91.7% !important;">
+        <div class="crawler_main_left">
+            <button class="button_h5 btnK01">뉴스</button>
+            <button class="button_h5 btnK01">블로그</button>
+            <button class="button_h5 btnK01">국내</button>
+            <button class="button_h5 btnK01">국외</button>
+
+            <div class="crawler_keyword">
+                <h4 class="crawler_keyword_text">키워드</h4>
+                <div class="crawler_keyword_table">
+                    <div class="crawler_keyword_create">삼성전자</div>
+                    <div class="crawler_keyword_create">현대자동차</div>
+                    <div class="crawler_keyword_create">LG전자</div>
+
+                    <div class="crawler_keyword_btn_group">
+                        <button class="crawler_keyword_insert">추가</button>
+                        <button class="crawler_keyword_delete">삭제</button>
+                    </div>
+
+                </div>
+                <div>
+                    <button class="crawler_start_btn button_h5 btnK01" id="crawlerStart">실행하기</button>
+                </div>
+            </div>
+        </div>
+        <div class="crawler_main_right">
+            <h4 class="crawler_keyword_text">LOG</h4>
+            <div class="crawler_result_list_table">
+                <div style="margin-top: 1%;"></div>
+                <div class="crawler_result_list" id="crawler_result_list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#checkAll').on('click', function () {
+            $('.checkSingle').prop('checked', this.checked);   
+        })
+
+        $('#crawlerStart').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/webcrawlerStart/",
+                data: {},
+                success: function (data) {
+                    var result = data.result;
+                    var resultlist = JSON.parse(JSON.stringify(result).split(','));
+
+                    for (var i = 0; i < resultlist.length; i++) {
+                        $("#crawler_result_list").append('<div class="crawler_result_rlist">'+resultlist[i]+'</div>');
+                    }
+                } 
+            });
+        });
+    });
+
+
+
+</script>
+
+
+
+
+
+{% endblock %} 

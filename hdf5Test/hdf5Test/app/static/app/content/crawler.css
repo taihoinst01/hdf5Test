@@ -1,0 +1,84 @@
+.crawlingResult {
+    border: 1px solid;
+}
+
+.crawler_main_left {
+    float: left;
+    width: 49%;
+    height: 95%;
+}
+
+.crawler_main_right {
+    float: right;
+    width: 49%;
+    height: 97.5%;
+}
+
+.crawler_keyword_table {
+    border: 1px solid;
+    width: 100%;
+    height: 90.5%;
+}
+
+.crawler_keyword {
+     margin: 1% 0% 1% 0%;
+}
+
+.crawler_keyword_text {
+    font-weight: bold;
+}
+
+.crawler_start_btn {
+    float: right;
+    margin-top: 1%;
+}
+
+.crawler_line {
+    border:1px solid;
+}
+.crawler_result_list_table {
+    border: 1px solid;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+.crawler_result_list {
+    width: 93.5%;
+    height: 3%;
+    position : relative;
+    left:3%;
+    margin-top : 35px;
+}
+
+.crawler_result_rlist {
+    border: 1px solid;
+    width: 100%;
+    position: relative;
+    margin-top : 10px;
+}
+
+.crawler_keyword_create {
+    float: left;
+    border: 1px solid green;
+    margin: 1% 1% 1% 1%;
+    border-radius: 45%;
+    color: green;
+    padding: 0.3% 1% 0.3% 1%;
+}
+
+.crawler_keyword_insert {
+    background-color:green;
+    margin: 1% 1% 1% 1%;
+    border-radius: 15%;
+    padding: 0.3% 1% 0.3% 1%;
+}
+.crawler_keyword_delete {
+    
+    margin: 1% 1% 1% 1%;
+    border-radius: 15%;
+    padding: 0.3% 1% 0.3% 1%;
+}
+.crawler_keyword_btn_group {
+    
+}
