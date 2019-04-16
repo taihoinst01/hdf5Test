@@ -1,6 +1,23 @@
+#mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    background-color: #000;
+    display: none;
+}
+
+#loadingImg {
+    position: absolute;
+    left: 45%;
+    top: 50%;
+    z-index: 120;
+    display: none;
+}
+
 .content_main {
     padding: 30px;
-    height:92.7%
+    height: 92.7%
 }
 
 .content_main_sub01 {
@@ -24,6 +41,7 @@ input {
     background: #D8D8D8;
     font-family: 'notokr-medium', sans-serif;
     text-align: center;
+    padding: 8px 10px 9px;
 }
 
 .table_style01 table {

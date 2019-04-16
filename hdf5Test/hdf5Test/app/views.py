@@ -24,6 +24,7 @@ from glob import glob
 import fnmatch
 import requests 
 from bs4 import BeautifulSoup
+import psycopg2 as pg2
 
 def home(request):
     """Renders the home page."""
@@ -270,7 +271,7 @@ def about(request):
         }
     )
 
-def crawlerResultFnc(request):
+def crawlerResultPage(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     return render(
@@ -320,3 +321,28 @@ def webcrawlerApp():
        cnt += 1
         
     return resultlist;
+    )
+
+
+def getCrawlerResultListFnc(request):
+    try :
+        conn = pg2.connect(host='localhost', dbname='crawler', user='ocr', password='taiho123')
+        cur = conn.cursor()
+
+        cur.execute('SELECT * FROM public."TBL_CRAWLERRESULT_LIST";')
+        rows = cur.fetchall()
+
+        data = {
+            'success': True,
+            'crawlerResultList': rows,
+        }
+
+        return JsonResponse(data)
+    except Exception as e:
+        print('postgresql database connection error!')
+        print(e)
+    else:
+        print(rows)
+    finally:
+        if conn:
+            conn.close()
