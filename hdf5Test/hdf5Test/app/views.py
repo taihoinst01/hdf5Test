@@ -321,12 +321,12 @@ def webcrawlerApp():
        cnt += 1
         
     return resultlist;
-    )
+    
 
 
 def getCrawlerResultListFnc(request):
     try :
-        conn = pg2.connect(host='localhost', dbname='crawler', user='ocr', password='taiho123')
+        conn = pg2.connect(host='192.168.0.244', dbname='crawler', user='ocr', password='taiho123', port='5432')
         cur = conn.cursor()
 
         cur.execute('SELECT * FROM public."TBL_CRAWLERRESULT_LIST";')

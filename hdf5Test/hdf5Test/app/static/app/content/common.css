@@ -2,16 +2,16 @@
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 100;
+    z-index: 300;
     background-color: #000;
-    display: none;
+    display:none;
 }
 
 #loadingImg {
     position: absolute;
     left: 45%;
     top: 50%;
-    z-index: 120;
+    z-index: 320;
     display: none;
 }
 
