@@ -24,11 +24,14 @@ dl, ul, ol, li {
         .lnb-box ul a li {
             display: block;
             width: 125px;
-            padding-top: 20px;
-            padding-bottom: 5px;
+            padding-top: 15px;
+            padding-bottom: 15px;
             color: white;
             font-family: 'NanumGothicB';
             text-align: center;
+            font-size: 1.3em;
+            background: #3f533f;
+            border-bottom: 0.5px solid #4aae72;
         }
 
             .lnb-box ul a li:hover {
