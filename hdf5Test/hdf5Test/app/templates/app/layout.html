@@ -16,6 +16,7 @@
     <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
     <script src="{% static 'app/scripts/bootstrap.js' %}"></script>
     <script src="{% static 'app/scripts/respond.js' %}"></script>
+    <script src="{% static 'app/scripts/jquery.form.min.js' %}"></script>
     <script>
         function wrapWindowByMask() {
             //화면의 높이와 너비를 구한다.
@@ -27,7 +28,7 @@
 
             //애니메이션 효과 - 일단 1초동안 까맣게 됐다가 80% 불투명도로 간다.
             //$('#mask').fadeIn(1000);      
-            $('#mask').fadeTo("slow", 0.6);
+            $('#mask').fadeTo("slow", 0.8);
         }
 
     </script>
@@ -64,7 +65,7 @@
                 <!--<a href="/invoiceRegistration"><li class="menu01">문서업로드</li></a>-->
                 <a href="/"><li class="menu01">H5</li></a>
                 <a href="/dirFileRead"><li class="menu02">DIR</li></a>
-                <a href="/crawlerResult"><li class="menu03">Crawler Result</li></a>
+                <a href="/crawlerML"><li class="menu03">Crawler ML</li></a>
                 <a href="/crawling"><li class="menu03">Crawling</li></a>
             </ul>
         </div>

@@ -24,7 +24,12 @@ from glob import glob
 import fnmatch
 import requests 
 from bs4 import BeautifulSoup
-import psycopg2 as pg2
+import psycopg2 as pg2 #DB연동
+from django.core.files.storage import FileSystemStorage #파일 저장
+from openpyxl import load_workbook #excel 읽기
+from django.conf import settings
+
+DB_CONN_INFO = "host=192.168.0.244 dbname=crawler user=taihoinst password=taiho123 port=5432";
 
 def home(request):
     """Renders the home page."""
@@ -271,12 +276,12 @@ def about(request):
         }
     )
 
-def crawlerResultPage(request):
+def crawlerMLPage(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        'app/crawlerResult.html',
+        'app/crawlerML.html',
         {
             'title':'About',
             'message':'Your application description page.',
@@ -322,14 +327,12 @@ def webcrawlerApp():
         
     return resultlist;
     
-
-
 def getCrawlerResultListFnc(request):
     try :
-        conn = pg2.connect(host='192.168.0.244', dbname='crawler', user='ocr', password='taiho123', port='5432')
+        conn = pg2.connect(DB_CONN_INFO)
         cur = conn.cursor()
 
-        cur.execute('SELECT * FROM public."TBL_CRAWLERRESULT_LIST";')
+        cur.execute('SELECT * FROM public."TBL_CRAWLER_RESULT_LIST";')
         rows = cur.fetchall()
 
         data = {
@@ -341,8 +344,22 @@ def getCrawlerResultListFnc(request):
     except Exception as e:
         print('postgresql database connection error!')
         print(e)
-    else:
-        print(rows)
     finally:
         if conn:
             conn.close()
+
+def uploadExcelFnc(request):
+    if request.method == 'POST' and request.FILES['excel']:
+        excel = request.FILES['excel']
+        fs = FileSystemStorage()
+        filename = fs.save(excel.name, excel)
+        worksheet = load_workbook(settings.BASE_DIR + '\\' + filename, data_only=True).worksheets[0]
+
+        for item in worksheet.iter_rows(min_row=2):
+            seq = item[0].value
+            sentence = item[2].value
+
+        return {'sucess': true}
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload.html', {'form': form})

@@ -23,12 +23,13 @@ urlpatterns = [
     url(r'^dirFileRead$', app.views.dirFileReadFnc, name='dirFileReadFnc'),
     url(r'^getImageByDir$', app.views.getImageByDirFnc, name='getImageByDirFnc'),
     url(r'^crawling$', app.views.crawling, name='crawling'),
-    url(r'^crawlerResult', app.views.crawlerResultPage, name='crawlerResultPage'),
+    url(r'^crawlerML$', app.views.crawlerMLPage, name='crawlerMLPage'),
 
     #ajax post
     url(r'^getImage/$', app.views.getImageFnc, name='getImageFnc'),
     url(r'^getCrawlerResultList$', app.views.getCrawlerResultListFnc, name='getCrawlerResultListFnc'),
     url(r'^webcrawlerStart', app.views.webcrawlerStart, name='webcrawlerStart'),
+    url(r'^crawlerML/uploadExcel', app.views.uploadExcelFnc, name='uploadExcelFnc'),
 
     url(r'^login/$',
         django.contrib.auth.views.login,

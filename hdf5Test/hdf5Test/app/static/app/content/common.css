@@ -15,6 +15,10 @@
     display: none;
 }
 
+.hidden {
+    display:none;
+}
+
 .content_main {
     padding: 30px;
     height: 92.7%
@@ -71,8 +75,8 @@ input {
 .btn_green {
     display: inline-block;
     width: 100px;
-    height: 35px;
-    line-height: 16px;
+    height: 45px;
+    line-height: 14px;
     padding: 9px 15px 11px;
     margin: 0;
     font-size: 15px;
