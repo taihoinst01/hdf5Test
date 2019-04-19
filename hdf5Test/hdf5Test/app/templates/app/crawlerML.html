@@ -101,10 +101,10 @@
                             appendListHtml += '<tr>';
                             appendListHtml += '<td><input type="checkbox" class="checkSingle" /></td>';
                             appendListHtml += '<td>' + crawlerResultList[i][0] +'</td>';
-                            appendListHtml += '<td>' + crawlerResultList[i][1] + '</td>';
+                            appendListHtml += '<td class="sentence">' + crawlerResultList[i][1] + '</td>';
                             appendListHtml += '<td></td>';
                             appendListHtml += '<td></td>';
-                            appendListHtml += '<td></td>';
+                            appendListHtml += '<td class="modelNumber"></td>';
                             appendListHtml += '<td></td>';
                             appendListHtml += '</tr>';
                         }
@@ -163,16 +163,26 @@
 
         $('#mlProcess').on('click', function() {
             $.ajax({
-                method: 'GET',
+                method: 'POST',
                 url: "/crawlerML/mlProcessFnc",
                 data: {},
                 beforeSend: function () {
                     wrapWindowByMask();
                     $('#loadingImg').show();
                 },
-                success: function (responseText, statusText) {
+                success: function (data) {
                     $('#loadingImg').hide();
                     $('#mask').hide();
+                    console.log(data);
+                    if (data.success) {
+                        console.log("들어옴");
+                        var modelNumberList = data.modelNumberList;
+                        var rows = $('#tbody_crawlerResultList tr');
+                        rows.each(function (index) {
+                            $(this).find('td:eq(5)').html(modelNumberList[index]);
+                        })
+                        
+                    }
                 },
                 error: function (e) {
                     $('#loadingImg').hide();

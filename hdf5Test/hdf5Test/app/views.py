@@ -28,6 +28,7 @@ import psycopg2 as pg2 #DB연동
 from django.core.files.storage import FileSystemStorage #파일 저장
 from openpyxl import load_workbook #excel 읽기
 from django.conf import settings
+from .module import DomainDicMain
 
 DB_CONN_INFO = "host=192.168.0.244 dbname=crawler user=taihoinst password=taiho123 port=5432";
 
@@ -376,7 +377,7 @@ def dbInsertQuery(queryList):
         for query in queryList:
             cur.execute(query)
         conn.commit()
-        print ("Record inserted successfully into mobile table")
+        print ("Record inserted successfully")
 
     except Exception as e:
         print(e)
@@ -386,7 +387,40 @@ def dbInsertQuery(queryList):
     finally:
         if conn:
             conn.close()
-
+@csrf_exempt
 def mlProcessFnc(request):
     print(1)
-    return
+    query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
+    result = dbSelectQuery(query)
+    modelNumberList = []
+    if(result):
+        print(2)
+        for row in result:
+            modelNumber = DomainDicMain.run(row[0])
+            modelNumberList.append(modelNumber)
+    else:
+        print(3)
+
+    data = {
+        'success': True,
+        'modelNumberList': modelNumberList
+    }
+    return JsonResponse(data)
+
+
+def dbSelectQuery(query):
+    try :
+        conn = pg2.connect(DB_CONN_INFO)
+        cur = conn.cursor()
+
+        cur.execute(query)
+        rows = cur.fetchall()
+
+    except Exception as e:
+        print(e)
+        return False
+    else:
+        return rows
+    finally:
+        if conn:
+            conn.close()
