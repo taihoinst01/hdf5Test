@@ -73,7 +73,7 @@
                     <button type="button" id="excelImportBtn" class="btn_green">EXCEL IMPORT</button>
                 </label>
             </form>
-			<button type="button" id="" class="btn_green">ML PROCESS</button>
+			<button type="button" id="mlProcess" class="btn_green">ML PROCESS</button>
 		</div>
 	</div>
 </div>
@@ -85,7 +85,7 @@
         function getCrawlerResultList () {
             $.ajax({
                 type: 'GET',
-                url: "/getCrawlerResultList",
+                url: "/crawlerML/getCrawlerResultList",
                 data: {},
                 beforeSend: function () {
                     wrapWindowByMask();
@@ -121,11 +121,11 @@
             });
         }
 
-        
+
         getCrawlerResultList();
 
         $('#checkAll').on('click', function () {
-            $('.checkSingle').prop('checked', this.checked);   
+            $('.checkSingle').prop('checked', this.checked);
         })
 
         $('#excelImportBtn').on('click', function () {
@@ -160,6 +160,26 @@
                 //console.log(e);
             }
         });
+
+        $('#mlProcess').on('click', function() {
+            $.ajax({
+                method: 'GET',
+                url: "/crawlerML/mlProcessFnc",
+                data: {},
+                beforeSend: function () {
+                    wrapWindowByMask();
+                    $('#loadingImg').show();
+                },
+                success: function (responseText, statusText) {
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
+                },
+                error: function (e) {
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
+                }
+            });
+        })
     });
 
 </script>

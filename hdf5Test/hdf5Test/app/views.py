@@ -387,3 +387,6 @@ def dbInsertQuery(queryList):
         if conn:
             conn.close()
 
+def mlProcessFnc(request):
+    print(1)
+    return
