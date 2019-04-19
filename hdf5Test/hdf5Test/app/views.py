@@ -354,12 +354,39 @@ def uploadExcelFnc(request):
         fs = FileSystemStorage()
         filename = fs.save(excel.name, excel)
         worksheet = load_workbook(settings.BASE_DIR + '\\' + filename, data_only=True).worksheets[0]
+        queryList = []
+        for column in worksheet.iter_rows(min_row=2):
+            sentence = column[2].value
+            if sentence is None:
+                break
+            queryList.append('INSERT INTO public.\"TBL_CRAWLER_RESULT_LIST\"(\"SENTENCE\") VALUES (\'' + sentence + '\');')
 
-        for item in worksheet.iter_rows(min_row=2):
-            seq = item[0].value
-            sentence = item[2].value
+        result = dbInsertQuery(queryList)
 
-        return {'sucess': true}
+        data = {
+            'success': result
+        }
+    return JsonResponse(data)
+
+def dbInsertQuery(queryList):
+    try :
+        conn = pg2.connect(DB_CONN_INFO)
+        cur = conn.cursor()
+
+        for query in queryList:
+            cur.execute(query)
+        conn.commit()
+        print ("Record inserted successfully into mobile table")
+
+    except Exception as e:
+        print(e)
+        return False
     else:
-        form = UploadFileForm()
-    return render(request, 'upload.html', {'form': form})
+        return True
+    finally:
+        if conn:
+            conn.close()
+
+def mlProcessFnc(request):
+    print(1)
+    return

@@ -27,9 +27,10 @@ urlpatterns = [
 
     #ajax post
     url(r'^getImage/$', app.views.getImageFnc, name='getImageFnc'),
-    url(r'^getCrawlerResultList$', app.views.getCrawlerResultListFnc, name='getCrawlerResultListFnc'),
+    url(r'^crawlerML/getCrawlerResultList$', app.views.getCrawlerResultListFnc, name='getCrawlerResultListFnc'),
     url(r'^webcrawlerStart', app.views.webcrawlerStart, name='webcrawlerStart'),
     url(r'^crawlerML/uploadExcel', app.views.uploadExcelFnc, name='uploadExcelFnc'),
+    url(r'^crawlerML/mlProcess', app.views.mlProcessFnc, name='mlProcessFnc'),
 
     url(r'^login/$',
         django.contrib.auth.views.login,
