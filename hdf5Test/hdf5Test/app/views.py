@@ -389,22 +389,23 @@ def dbInsertQuery(queryList):
             conn.close()
 @csrf_exempt
 def mlProcessFnc(request):
-    print(1)
     query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
     result = dbSelectQuery(query)
     modelNumberList = []
     if(result):
-        print(2)
         for row in result:
             modelNumber = DomainDicMain.run(row[0])
             modelNumberList.append(modelNumber)
-    else:
-        print(3)
 
-    data = {
-        'success': True,
-        'modelNumberList': modelNumberList
-    }
+        data = {
+            'success': True,
+            'modelNumberList': modelNumberList
+        }
+    else:
+        data = {
+            'success': False    
+        }
+
     return JsonResponse(data)
 
 

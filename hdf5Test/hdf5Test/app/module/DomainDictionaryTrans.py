@@ -3,17 +3,11 @@ import os
 import sys
 import re
 import json
-import cx_Oracle
+import psycopg2 as pg2 #DB연동
 
-id = "ocr"
-pw = "taiho123"
-sid = "ocrservice"
-# ip = "10.10.20.205"
-ip = "192.168.0.251"
-port = "1521"
-connInfo = id + "/" + pw + "@" + ip + ":" + port + "/" + sid
+DB_CONN_INFO = "host=192.168.0.244 dbname=crawler user=taihoinst password=taiho123 port=5432";
 
-conn = cx_Oracle.connect(connInfo, encoding="UTF-8", nencoding="UTF-8")
+conn = pg2.connect(DB_CONN_INFO)
 curs = conn.cursor()
 
 class DomainDicTrans():
@@ -22,7 +16,7 @@ class DomainDicTrans():
         frontword = ''
         rearword = ''
         returnsentence = ''
-        sql = "SELECT CORRECTEDWORDS FROM TBL_OCR_DOMAIN_DIC_TRANS WHERE ORIGINWORD = :orign AND FRONTWORD = :front  AND REARWORD = :rear"
+        sql = 'SELECT CORRECTEDWORDS FROM public."TBL_CRAWLER_DOMAIN_DIC_TRANS" WHERE ORIGINWORD = %s AND FRONTWORD = %s  AND REARWORD = %s'
         for i in range(len(phrase)):
             if i == 0:
                 frontword = '<<N>>'
@@ -34,7 +28,7 @@ class DomainDicTrans():
                 rearword = phrase[i+1]
             originword = phrase[i]
 
-            params = [originword, frontword, rearword]
+            params = (originword, frontword, rearword)
             #print(dbConnection.selectDDT(sql, params).get('CORRECTEDWORDS'))
 
             if (returnsentence != ''):
