@@ -303,29 +303,33 @@ def crawling(request):
 
 
 def webcrawlerStart(request):
-    """Renders the about page."""
-    assert isinstance(request, HttpRequest)
-    resultlist = webcrawlerApp();
-    data = {
-            'success': True,
-            'result' : resultlist
-        }
-    return JsonResponse(data)
+        """Renders the about page."""
+        assert isinstance(request, HttpRequest)
+        resultlist = webcrawlerApp();
+        data = {
+                'success': True,
+                'result' : resultlist
+            }
+        return JsonResponse(data)
 
 def webcrawlerApp():
     cnt = 0
     pageNum = 100
-    resultlist = [];
+    resultlist = []
+    queryList = []
+    num = 0
     while cnt<=pageNum:
        r = requests.get('http://minishop.gmarket.co.kr/cam365/List?Title=Best%20Item&CategoryType=General&SortType=MostPopular&DisplayType=List&Page='+str(cnt)+'&PageSize=60&IsFreeShipping=False&HasDiscount=False&HasStamp=False&HasMileage=False&IsInternationalShipping=False&MinPrice=36890&MaxPrice=912120#listTop')
        html = r.text
        soup = BeautifulSoup(html, 'html.parser')
        titles = soup.select('.sbj') 
        for title in titles:
-            resultlist.append(title.text);
+            resultlist.append(title.text)
+            queryList.append('INSERT INTO public.\"TBL_CRAWLER_RESULT_LIST\"(\"SENTENCE\") VALUES (\'' + title.text.split('\n')[1] + '\');')
        cnt += 1
-        
-    return resultlist;
+
+    result = dbInsertQuery(queryList)
+    return resultlist
     
 def getCrawlerResultListFnc(request):
     try :
