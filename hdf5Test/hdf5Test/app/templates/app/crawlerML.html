@@ -73,7 +73,7 @@
                     <button type="button" id="excelImportBtn" class="btn_green">EXCEL IMPORT</button>
                 </label>
             </form>
-			<button type="button" id="" class="btn_green">ML PROCESS</button>
+			<button type="button" id="mlProcess" class="btn_green">ML PROCESS</button>
 		</div>
 	</div>
 </div>
@@ -85,7 +85,7 @@
         function getCrawlerResultList () {
             $.ajax({
                 type: 'GET',
-                url: "/getCrawlerResultList",
+                url: "/crawlerML/getCrawlerResultList",
                 data: {},
                 beforeSend: function () {
                     wrapWindowByMask();
@@ -101,10 +101,10 @@
                             appendListHtml += '<tr>';
                             appendListHtml += '<td><input type="checkbox" class="checkSingle" /></td>';
                             appendListHtml += '<td>' + crawlerResultList[i][0] +'</td>';
-                            appendListHtml += '<td>' + crawlerResultList[i][1] + '</td>';
+                            appendListHtml += '<td class="sentence">' + crawlerResultList[i][1] + '</td>';
                             appendListHtml += '<td></td>';
                             appendListHtml += '<td></td>';
-                            appendListHtml += '<td></td>';
+                            appendListHtml += '<td class="modelNumber"></td>';
                             appendListHtml += '<td></td>';
                             appendListHtml += '</tr>';
                         }
@@ -121,11 +121,11 @@
             });
         }
 
-        
+
         getCrawlerResultList();
 
         $('#checkAll').on('click', function () {
-            $('.checkSingle').prop('checked', this.checked);   
+            $('.checkSingle').prop('checked', this.checked);
         })
 
         $('#excelImportBtn').on('click', function () {
@@ -160,6 +160,36 @@
                 //console.log(e);
             }
         });
+
+        $('#mlProcess').on('click', function() {
+            $.ajax({
+                method: 'POST',
+                url: "/crawlerML/mlProcessFnc",
+                data: {},
+                beforeSend: function () {
+                    wrapWindowByMask();
+                    $('#loadingImg').show();
+                },
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
+                    console.log(data);
+                    if (data.success) {
+                        console.log("들어옴");
+                        var modelNumberList = data.modelNumberList;
+                        var rows = $('#tbody_crawlerResultList tr');
+                        rows.each(function (index) {
+                            $(this).find('td:eq(5)').html(modelNumberList[index]);
+                        })
+                        
+                    }
+                },
+                error: function (e) {
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
+                }
+            });
+        })
     });
 
 </script>
