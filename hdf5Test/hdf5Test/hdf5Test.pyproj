@@ -112,6 +112,9 @@
     <Content Include="app\static\uploads\airport_inside_0010.jpg" />
     <Content Include="app\static\uploads\airport_inside_0011.jpg" />
     <Content Include="app\static\uploads\airport_inside_0012.jpg" />
+    <Content Include="app\templates\app\crawlerML.html" />
+    <Content Include="app\templates\app\crawling.html" />
+    <Content Include="app\templates\app\normalDir.html" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />

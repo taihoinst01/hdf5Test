@@ -5,9 +5,9 @@ import json
 import tensorflow as tf
 import numpy as np
 import os
-import data_helpers
-from multi_class_data_loader import MultiClassDataLoader
-from word_data_processor import WordDataProcessor
+#from .cnn import data_helpers
+from .multi_class_data_loader import MultiClassDataLoader
+from .word_data_processor import WordDataProcessor
 import csv
 import sys
 
@@ -15,7 +15,7 @@ def startEval(ocrData):
     # Parameters
     # ==================================================
     del_all_flags(tf.flags.FLAGS)
-
+    #[{'text': 'DYNAPRO ATM RF10,DYNAPRO\n'}, {'text': 'KINERGY 4S H740,KINERGY\n'}, {'text': 'KINERGY 4S2 H750,KINERGY\n'}, {'text': 'KINERGY ECO K425,KINERGY\n'}, {'text': 'KINERGY ECO2 K435,KINERGY\n'}, {'text': 'VENTUS S1 EVO2 K117,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 K117...,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 K117...,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 K117...,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 SUV ...,VENTUS\n'}, {'text': 'VENTUS S1 EVO3 K127,VENTUS\n'}, {'text': 'VENTUS S1 NOBLE2 H4...,VENTUS\n'}, {'text': 'VENTUS S1 NOBLE2+ H...,VENTUS\n'}, {'text': 'VENTUS S2 AS H462,VENTUS\n'}, ...]
     # ocrData = json.loads('[{"location":"1018,240,411,87","text":"APEX"},{"location":"1019,338,409,23","text":"Partner of Choice"},{"location":"1562,509,178,25","text":"Voucher No"},{"location":"1562,578,206,25","text":"Voucher Date"},{"location":"206,691,274,27","text":"4153 Korean Re"},{"location":"208,756,525,34","text":"Proportional Treaty Statement"},{"location":"1842,506,344,25","text":"BV/HEO/2018/05/0626"},{"location":"1840,575,169,25","text":"01105/2018"},{"location":"206,848,111,24","text":"Cedant"},{"location":"206,908,285,24","text":"Class of Business"},{"location":"210,963,272,26","text":"Period of Quarter"},{"location":"207,1017,252,31","text":"Period of Treaty"},{"location":"206,1066,227,24","text":"Our Reference"},{"location":"226,1174,145,31","text":"Currency"},{"location":"227,1243,139,24","text":"Premium"},{"location":"226,1303,197,24","text":"Commission"},{"location":"226,1366,107,24","text":"Claims"},{"location":"227,1426,126,24","text":"Reserve"},{"location":"227,1489,123,24","text":"Release"},{"location":"227,1549,117,24","text":"Interest"},{"location":"227,1609,161,31","text":"Brokerage"},{"location":"233,1678,134,24","text":"Portfolio"},{"location":"227,1781,124,24","text":"Balance"},{"location":"574,847,492,32","text":": Solidarity- First Insurance 2018"},{"location":"574,907,568,32","text":": Marine Cargo Surplus 2018 - Inward"},{"location":"598,959,433,25","text":"01-01-2018 TO 31-03-2018"},{"location":"574,1010,454,25","text":": 01-01-2018 TO 31-12-2018"},{"location":"574,1065,304,25","text":": APEX/BORD/2727"},{"location":"629,1173,171,25","text":"JOD 1.00"},{"location":"639,1239,83,25","text":"25.53"},{"location":"639,1299,64,25","text":"5.74"},{"location":"639,1362,64,25","text":"0.00"},{"location":"639,1422,64,25","text":"7.66"},{"location":"639,1485,64,25","text":"0.00"},{"location":"639,1545,64,25","text":"0.00"},{"location":"639,1605,64,25","text":"0.64"},{"location":"648,1677,64,25","text":"0.00"},{"location":"641,1774,81,25","text":"11 .49"},{"location":"1706,1908,356,29","text":"APEX INSURANCE"}]')
     # Eval Parameters
     tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
@@ -30,8 +30,11 @@ def startEval(ocrData):
     data_loader.define_flags()
 
     FLAGS = tf.flags.FLAGS
-    # FLAGS._parse_flags()
-    FLAGS(sys.argv)
+    #FLAGS._parse_flags()
+    tmp_list = []
+    tmp_list.append(sys.argv[0])
+    #FLAGS(sys.argv)
+    FLAGS(tmp_list)
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))
@@ -41,13 +44,13 @@ def startEval(ocrData):
         x_raw, y_test = data_loader.load_data_and_labels()
         y_test = np.argmax(y_test, axis=1)
     else:
-        x_raw, y_test = data_loader.load_dev_data_and_labels()
-        # x_raw, y_test = data_loader.load_dev_data_and_labels_json(ocrData)
+        # x_raw, y_test = data_loader.load_dev_data_and_labels()
+        x_raw, y_test = data_loader.load_dev_data_and_labels_json(ocrData)
         y_test = np.argmax(y_test, axis=1)
-
+    #app/cnn/data/kkk.cls
     # checkpoint_dir이 없다면 가장 최근 dir 추출하여 셋팅
     if FLAGS.checkpoint_dir == "":
-        all_subdirs = ["./runs/" + d for d in os.listdir('./runs/.') if os.path.isdir("./runs/" + d)]
+        all_subdirs = ["app/cnn/runs/" + d for d in os.listdir('app/cnn/runs/.') if os.path.isdir("app/cnn/runs/" + d)]
         latest_subdir = max(all_subdirs, key=os.path.getmtime)
         FLAGS.checkpoint_dir = latest_subdir + "/checkpoints/"
 
@@ -81,7 +84,7 @@ def startEval(ocrData):
             predictions = graph.get_operation_by_name("output/predictions").outputs[0]
 
             # Generate batches for one epoch
-            batches = data_helpers.batch_iter(list(x_test), FLAGS.batch_size, 1, shuffle=False)
+            batches = batch_iter(list(x_test), FLAGS.batch_size, 1, shuffle=False)
 
             # Collect the predictions here
             all_predictions = []
@@ -106,11 +109,16 @@ def startEval(ocrData):
     #     for row in ocrData:
     #         if i[0].lower() == row['text'].lower():
     #             row['colLbl'] = i[1]
-
+    rst_list = []
     for i in predictions_human_readable:
         print(i)
-
-    return ocrData
+        obDict = {}
+        obDict['text'] = i[0]
+        obDict['result'] = i[1]
+        rst_list.append(obDict)
+        
+    #return ocrData
+    return rst_list
 
     # with open(out_path, 'w') as f:
     #     csv.writer(f).writerows(predictions_human_readable)
@@ -121,6 +129,24 @@ def del_all_flags(FLAGS):
     for keys in keys_list:
         FLAGS.__delattr__(keys)
 
+def batch_iter(data, batch_size, num_epochs, shuffle=True):
+    """
+    Generates a batch iterator for a dataset.
+    """
+    data = np.array(data)
+    data_size = len(data)
+    num_batches_per_epoch = int(len(data)/batch_size) + 1
+    for epoch in range(num_epochs):
+        # Shuffle the data at each epoch
+        if shuffle:
+            shuffle_indices = np.random.permutation(np.arange(data_size))
+            shuffled_data = data[shuffle_indices]
+        else:
+            shuffled_data = data
+        for batch_num in range(num_batches_per_epoch):
+            start_index = batch_num * batch_size
+            end_index = min((batch_num + 1) * batch_size, data_size)
+            yield shuffled_data[start_index:end_index]
 
-if __name__ == '__main__':
-    startEval('test')
+#if __name__ == '__main__':
+    #startEval('test')

@@ -38,7 +38,7 @@ def startTrain():
 
     FLAGS = tf.flags.FLAGS
     # FLAGS._parse_flags()
-    FLAGS(sys.argv)
+    # FLAGS(sys.argv)
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))
@@ -196,7 +196,7 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
             start_index = batch_num * batch_size
             end_index = min((batch_num + 1) * batch_size, data_size)
             yield shuffled_data[start_index:end_index]
-
-if __name__ == '__main__':
-    print("dddd")
+            
+#if __name__ == '__main__':
+    #print("dddd")
     #startTrain()

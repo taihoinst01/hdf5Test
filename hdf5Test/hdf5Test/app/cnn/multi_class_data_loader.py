@@ -20,9 +20,9 @@ class MultiClassDataLoader(object):
 
 #C:\Users\dyyoo\Desktop\바탕화면\소장님\18.빅데이터\cnn\data
     def define_flags(self):
-        self.__flags.DEFINE_string("train_data_file", "C:/Users/dyyoo/Desktop/바탕화면/소장님/18.빅데이터/cnn/data/kkk.train", "Data source for the training data.")
-        self.__flags.DEFINE_string("dev_data_file", "C:/Users/dyyoo/Desktop/바탕화면/소장님/18.빅데이터/cnn/data/kkk.dev", "Data source for the cross validation data.")
-        self.__flags.DEFINE_string("class_data_file", "C:/Users/dyyoo/Desktop/바탕화면/소장님/18.빅데이터/cnn/data/kkk.cls", "Data source for the class list.")
+        self.__flags.DEFINE_string("train_data_file", "app/cnn/data/kkk.train", "Data source for the training data.")
+        self.__flags.DEFINE_string("dev_data_file", "app/cnn/data/kkk.dev", "Data source for the cross validation data.")
+        self.__flags.DEFINE_string("class_data_file", "app/cnn/data/kkk.cls", "Data source for the class list.")
 
     def prepare_data(self):
         try:
@@ -101,7 +101,7 @@ class MultiClassDataLoader(object):
             for row in ocrData:
                 data = self.__data_processor.clean_data(row['text'])
                 x_text.append(data)
-                y.append((class_vectors['etc']))
+                y.append((class_vectors['DYNAPRO']))
             return [x_text, np.array(y)]
         except Exception as e:
             print(e)
