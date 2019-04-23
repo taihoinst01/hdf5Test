@@ -5,7 +5,7 @@ import re
 import json
 import psycopg2 as pg2 #DB연동
 
-DB_CONN_INFO = "host=192.168.0.244 dbname=crawler user=taihoinst password=taiho123 port=5432";
+DB_CONN_INFO = "host=192.168.0.183 dbname=crawler user=taihoinst password=taiho123 port=5432";
 
 conn = pg2.connect(DB_CONN_INFO)
 curs = conn.cursor()

@@ -30,7 +30,7 @@ from openpyxl import load_workbook #excel 읽기
 from django.conf import settings
 from .module import DomainDicMain
 
-DB_CONN_INFO = "host=192.168.0.244 dbname=crawler user=taihoinst password=taiho123 port=5432";
+DB_CONN_INFO = "host=192.168.0.183 dbname=crawler user=taihoinst password=taiho123 port=5432";
 
 def home(request):
     """Renders the home page."""
