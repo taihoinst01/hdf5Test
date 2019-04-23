@@ -302,7 +302,7 @@ def crawling(request):
         }
     )
 
-
+@csrf_exempt
 def webcrawlerStart(request):
         """Renders the about page."""
         assert isinstance(request, HttpRequest)
@@ -391,6 +391,7 @@ def dbInsertQuery(queryList):
     finally:
         if conn:
             conn.close()
+
 @csrf_exempt
 def mlProcessFnc(request):
     query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
