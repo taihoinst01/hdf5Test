@@ -49,16 +49,7 @@
                             <col style="width:50px;">
                         </colgroup>
 						<tbody id="tbody_crawlerResultList">
-							<!--<tr>
-								<td><input type="checkbox" class="checkSingle"/></td>
-								<td><input type="text" value="MATCH00012295"></td>
-								<td><input type="text" value="99%"></td>
-								<td><input type="text" value="HANKOOK"></td>
-								<td><input type="text" value="DYNAPRO ATM RF10"></td>
-								<td><input type="text" value="HANKOOK"></td>
-								<td><input type="text" value="DYNAPRO AT/M 4X4 BEYAZ YAZILI D?RT MEVS?M"></td>
-								<td><input type="text" value=""></td>
-							</tr>-->
+
 						</tbody>
 					</table>
 				</div>
@@ -179,7 +170,7 @@
                         var modelNumberList = data.modelNumberList;
                         var rows = $('#tbody_crawlerResultList tr');
                         rows.each(function (index) {
-                            $(this).find('td:eq(5)').html(modelNumberList[index]);
+                            $(this).find('.modelNumber').html(modelNumberList[index]);
                         })
                         
                     }
