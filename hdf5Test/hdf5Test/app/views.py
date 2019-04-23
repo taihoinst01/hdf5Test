@@ -28,8 +28,9 @@ import psycopg2 as pg2 #DB연동
 from django.core.files.storage import FileSystemStorage #파일 저장
 from openpyxl import load_workbook #excel 읽기
 from django.conf import settings
+from .module import DomainDicMain
 
-DB_CONN_INFO = "host=192.168.0.244 dbname=crawler user=taihoinst password=taiho123 port=5432";
+DB_CONN_INFO = "host=192.168.0.183 dbname=crawler user=taihoinst password=taiho123 port=5432";
 
 def home(request):
     """Renders the home page."""
@@ -301,31 +302,35 @@ def crawling(request):
         }
     )
 
-
+@csrf_exempt
 def webcrawlerStart(request):
-    """Renders the about page."""
-    assert isinstance(request, HttpRequest)
-    resultlist = webcrawlerApp();
-    data = {
-            'success': True,
-            'result' : resultlist
-        }
-    return JsonResponse(data)
+        """Renders the about page."""
+        assert isinstance(request, HttpRequest)
+        resultlist = webcrawlerApp();
+        data = {
+                'success': True,
+                'result' : resultlist
+            }
+        return JsonResponse(data)
 
 def webcrawlerApp():
     cnt = 0
     pageNum = 100
-    resultlist = [];
+    resultlist = []
+    queryList = []
+    num = 0
     while cnt<=pageNum:
        r = requests.get('http://minishop.gmarket.co.kr/cam365/List?Title=Best%20Item&CategoryType=General&SortType=MostPopular&DisplayType=List&Page='+str(cnt)+'&PageSize=60&IsFreeShipping=False&HasDiscount=False&HasStamp=False&HasMileage=False&IsInternationalShipping=False&MinPrice=36890&MaxPrice=912120#listTop')
        html = r.text
        soup = BeautifulSoup(html, 'html.parser')
        titles = soup.select('.sbj') 
        for title in titles:
-            resultlist.append(title.text);
+            resultlist.append(title.text)
+            queryList.append('INSERT INTO public.\"TBL_CRAWLER_RESULT_LIST\"(\"SENTENCE\") VALUES (\'' + title.text.split('\n')[1] + '\');')
        cnt += 1
-        
-    return resultlist;
+
+    result = dbInsertQuery(queryList)
+    return resultlist
     
 def getCrawlerResultListFnc(request):
     try :
@@ -376,7 +381,7 @@ def dbInsertQuery(queryList):
         for query in queryList:
             cur.execute(query)
         conn.commit()
-        print ("Record inserted successfully into mobile table")
+        print ("Record inserted successfully")
 
     except Exception as e:
         print(e)
@@ -387,6 +392,41 @@ def dbInsertQuery(queryList):
         if conn:
             conn.close()
 
+@csrf_exempt
 def mlProcessFnc(request):
-    print(1)
-    return
+    query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
+    result = dbSelectQuery(query)
+    modelNumberList = []
+    if(result):
+        for row in result:
+            modelNumber = DomainDicMain.run(row[0])
+            modelNumberList.append(modelNumber)
+
+        data = {
+            'success': True,
+            'modelNumberList': modelNumberList
+        }
+    else:
+        data = {
+            'success': False    
+        }
+
+    return JsonResponse(data)
+
+
+def dbSelectQuery(query):
+    try :
+        conn = pg2.connect(DB_CONN_INFO)
+        cur = conn.cursor()
+
+        cur.execute(query)
+        rows = cur.fetchall()
+
+    except Exception as e:
+        print(e)
+        return False
+    else:
+        return rows
+    finally:
+        if conn:
+            conn.close()

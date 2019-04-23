@@ -54,7 +54,13 @@
                 type: "POST",
                 url: "/webcrawlerStart/",
                 data: {},
+                beforeSend: function () {
+                    wrapWindowByMask();
+                    $('#loadingImg').show();
+                },
                 success: function (data) {
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
                     var result = data.result;
                     var resultlist = JSON.parse(JSON.stringify(result).split(','));
 
