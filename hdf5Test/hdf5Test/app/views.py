@@ -10,6 +10,9 @@ from django.template import RequestContext
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 
+from .cnn import train
+from .cnn import eval
+
 import cv2
 import datetime as dt
 import h5py
@@ -401,10 +404,52 @@ def mlProcessFnc(request):
         for row in result:
             modelNumber = DomainDicMain.run(row[0])
             modelNumberList.append(modelNumber)
+        
+        data_file_path__ = 'app/cnn/data/kkk.cls'
+        col_file_Path__ = 'app/cnn/data/kkk.train'
+
+        with open(data_file_path__, 'rb') as data:
+            col_list = [l.decode('utf8', 'ignore') for l in data.readlines()]
+        
+        with open(col_file_Path__, 'rb') as data:
+            train_list = [l.decode('utf8', 'ignore') for l in data.readlines()]
+
+        file = open(col_file_Path__, 'a', -1, encoding='UTF8')
+        new_col_list = []
+        for item in result:
+            if any(item[0] in s for s in train_list):
+                continue
+            else:
+                is_in = False
+                col_val = ""
+                for cvalue in col_list:
+                    if cvalue in item[0]:
+                        isIn = True
+                        col_val = cvalue
+
+                #if is_in:
+                    #file.write("\n" + item[0] + "," + col_val)
+                    #train_list.append(item[0] + "," + col_val + "\n")
+                #else:
+                    #file.write("\n" + item[0] + ",etc")
+                    #train_list.append(item[0] + ",etc" + "\n")
+
+        file.close()
+            
+        eval_list = []
+        for fil in train_list:
+            obDict = {}
+            obDict['text'] = fil.replace("\n", "").split(",")[0]
+            obDict['location'] = fil.replace("\n", "").split(",")[1]
+            eval_list.append(obDict)
+
+        #train.startTrain()
+        rst_list = eval.startEval(eval_list)
 
         data = {
             'success': True,
-            'modelNumberList': modelNumberList
+            'modelNumberList': modelNumberList, 
+            'rst_list' : rst_list
         }
     else:
         data = {
