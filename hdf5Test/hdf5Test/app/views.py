@@ -23,6 +23,11 @@ import json
 import http.client, urllib.request, urllib.parse, urllib.error, base64
 import time
 import os
+import xlsxwriter
+import pandas as pd
+import os, sys
+from openpyxl import Workbook
+from datetime import datetime
 from glob import glob
 import fnmatch
 import requests 
@@ -32,6 +37,7 @@ from django.core.files.storage import FileSystemStorage #파일 저장
 from openpyxl import load_workbook #excel 읽기
 from django.conf import settings
 from .module import DomainDicMain
+from pandas import DataFrame
 
 DB_CONN_INFO = "host=192.168.0.183 dbname=crawler user=taihoinst password=taiho123 port=5432";
 
@@ -361,7 +367,7 @@ def uploadExcelFnc(request):
         excel = request.FILES['excel']
         fs = FileSystemStorage()
         filename = fs.save(excel.name, excel)
-        worksheet = load_workbook(settings.BASE_DIR + '\\' + filename, data_only=True).worksheets[0]
+        worksheet = load_workbook('c:/pythonFiles' + '\\' + filename, data_only=True).worksheets[0]
         queryList = []
         for column in worksheet.iter_rows(min_row=2):
             sentence = column[2].value
@@ -375,6 +381,58 @@ def uploadExcelFnc(request):
             'success': result
         }
     return JsonResponse(data)
+
+
+@csrf_exempt
+def mlexcelexport(request):
+        """Renders the about page."""
+        assert isinstance(request, HttpRequest)
+        mlexcelexportFnc()
+        data = {
+                'success': True
+            }
+        return JsonResponse(data)
+
+def mlexcelexportFnc():
+
+    query = 'SELECT * FROM public."TBL_CRAWLER_RESULT_LIST";'
+    result = dbSelectQuery(query)
+
+    dt = datetime.now()
+       
+    list_values = [[result[0][0]]]
+    
+
+    # Create a Workbook on Excel:
+    wb = Workbook()
+    sheet = wb.active
+    sheet.title = 'data'
+
+    # Print the titles into Excel Workbook:
+    row = 1
+    sheet['A'+str(row)] = 'SEQ'
+    sheet['B'+str(row)] = 'Sentence'
+    sheet['C'+str(row)] = 'Company Name'
+    sheet['D'+str(row)] = '정확도'
+    sheet['E'+str(row)] = 'Model Numbeer'
+    sheet['F'+str(row)] = '정확도'
+
+    # Populate with data
+    for item in list_values:
+        row += 1
+        sheet['A'+str(row)] = item[0]
+        sheet['B'+str(row)] = item[1]
+        sheet['C'+str(row)] = item[2]
+
+    # Save a file by date:
+    filename = 'data_' + dt.strftime("%Y%m%d_%I%M%S") + '.xlsx'
+    wb.save(filename)
+
+    # Open the file for the user:
+    os.chdir('c:/pythonFiles')
+    
+
+
 
 def dbInsertQuery(queryList):
     try :

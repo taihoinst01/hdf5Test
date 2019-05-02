@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^webcrawlerStart', app.views.webcrawlerStart, name='webcrawlerStart'),
     url(r'^crawlerML/uploadExcel', app.views.uploadExcelFnc, name='uploadExcelFnc'),
     url(r'^crawlerML/mlProcess', app.views.mlProcessFnc, name='mlProcessFnc'),
+    url(r'^crawlerML/mlexcelexport', app.views.mlexcelexport, name='mlexcelexport'),
 
     url(r'^login/$',
         django.contrib.auth.views.login,
