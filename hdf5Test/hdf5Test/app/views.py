@@ -385,11 +385,18 @@ def uploadExcelFnc(request):
 
 @csrf_exempt
 def mlexcelexport(request):
-        """Renders the about page."""
-        assert isinstance(request, HttpRequest)
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    isDone = False
+    try:
         mlexcelexportFnc()
+    except Exception as e:
+        print(e)
+    else:
+        isDone = True
+    finally:
         data = {
-                'success': True
+                'success': isDone
             }
         return JsonResponse(data)
 
