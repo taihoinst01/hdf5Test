@@ -61,6 +61,7 @@
             <form action="crawlerML/uploadExcel" method="post" enctype="multipart/form-data" id="excelUploadForm" style="display:inline-block">{% csrf_token %}
                 <label>
                     <input type="file" id="excelImportIpt" name="excel" style="display:none;"/>
+                    <button type="button" id="excelexporttBtn" class="btn_green">EXCEL EXPORT</button>
                     <button type="button" id="excelImportBtn" class="btn_green">EXCEL IMPORT</button>
                 </label>
             </form>
@@ -124,6 +125,22 @@
             $('#excelImportIpt').click();
         })
 
+        $('#excelexporttBtn').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/crawlerML/mlexcelexport/",
+                data: {},
+                beforeSend: function () {
+                    wrapWindowByMask();
+                    $('#loadingImg').show();
+                },
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
+                    alert('엑셀성공하였습니다.\n 경로는 c:/pythonFiles 입니다.')
+                } 
+            });
+        })
         $('#excelImportIpt').on('change', function () {
             $('#excelUploadForm').submit();
         })

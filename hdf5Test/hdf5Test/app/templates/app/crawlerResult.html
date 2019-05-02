@@ -1,0 +1,129 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div id="content">
+    <div class="title">
+        <div class="content_title_icon content_icon"></div>
+        <div class="content_title1">Crawler Result </div>
+    </div>
+    <div class="content_main">
+        <div class="content_main_sub01">
+			<div class="table_style01">
+				<div style="overflow-x:hidden; overflow-y:hidden;">
+					<table cellspacing="0" cellpadding="0" class="docTableColumn">
+                        <colgroup>
+                            <col style="width:50px;">
+                            <col style="width:200px;">
+                            <col style="width:200px;">
+                            <col style="width:200px;">
+                            <col style="width:50px;">
+                            <col style="width:200px;">
+                            <col style="width:50px;">
+                            <col style="width:17px;">
+                        </colgroup>
+						<thead>
+							<tr>
+								<th scope="row"><input type="checkbox" id="checkAll"/></th>
+								<th scope="row">SEQ</th>
+								<th scope="row">Sentence</th>
+								<th scope="row">Company Name</th>
+								<th scope="row">정확도</th>
+								<th scope="row">Model Number</th>
+								<th scope="row">정확도</th>
+                                <th></th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+
+				<div style="height:600px; overflow-y:scroll;">
+					<table>
+                        <colgroup>
+                            <col style="width:50px;">
+                            <col style="width:200px;">
+                            <col style="width:200px;">
+                            <col style="width:200px;">
+                            <col style="width:50px;">
+                            <col style="width:200px;">
+                            <col style="width:50px;">
+                        </colgroup>
+						<tbody id="tbody_crawlerResultList">
+							<!--<tr>
+								<td><input type="checkbox" class="checkSingle"/></td>
+								<td><input type="text" value="MATCH00012295"></td>
+								<td><input type="text" value="99%"></td>
+								<td><input type="text" value="HANKOOK"></td>
+								<td><input type="text" value="DYNAPRO ATM RF10"></td>
+								<td><input type="text" value="HANKOOK"></td>
+								<td><input type="text" value="DYNAPRO AT/M 4X4 BEYAZ YAZILI D?RT MEVS?M"></td>
+								<td><input type="text" value=""></td>
+							</tr>-->
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="fr">
+			<button type="button" id="" class="btn_green">재학습</button>
+			<button type="button" id="" class="btn_green">등록</button>
+		</div>
+	</div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        function getCrawlerResultList () {
+            $.ajax({
+                type: 'GET',
+                url: "/getCrawlerResultList",
+                data: {},
+                beforeSend: function () {
+                    wrapWindowByMask();
+                    $('#loadingImg').show();
+                },
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
+                    if (data.success) {
+                        var crawlerResultList = data.crawlerResultList;
+                        var appendListHtml = '';
+                        for (var i = 0; i < crawlerResultList.length; i++) {
+                            appendListHtml += '<tr>';
+                            appendListHtml += '<td><input type="checkbox" class="checkSingle" /></td>';
+                            appendListHtml += '<td><input type="text" value="' + crawlerResultList[i][0] + '" /></td>';
+                            appendListHtml += '<td><input type="text" value="' + crawlerResultList[i][1] + '" /></td>';
+                            appendListHtml += '<td></td>';
+                            appendListHtml += '<td></td>';
+                            appendListHtml += '<td></td>';
+                            appendListHtml += '<td></td>';
+                            appendListHtml += '</tr>';
+                        }
+                        $('#tbody_crawlerResultList').append(appendListHtml);
+
+                    } else {
+
+                    }
+                }
+            });
+        }
+
+        
+        getCrawlerResultList();
+
+        $('#checkAll').on('click', function () {
+            $('.checkSingle').prop('checked', this.checked);   
+        })
+    });
+
+</script>
+
+
+
+
+
+{% endblock %} 
