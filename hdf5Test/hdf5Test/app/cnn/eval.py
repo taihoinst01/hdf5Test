@@ -94,10 +94,13 @@ def startEval(ocrData):
                 all_predictions = np.concatenate([all_predictions, batch_predictions])
 
     # Print accuracy if y_test is defined
+    
     if y_test is not None:
         correct_predictions = float(sum(all_predictions == y_test))
         print("Total number of test examples: {}".format(len(y_test)))
+        accuracy = round(correct_predictions/float(len(y_test)), 3)
         print("Accuracy: {:g}".format(correct_predictions/float(len(y_test))))
+
 
     # Save the evaluation to a csv
     class_predictions = data_loader.class_labels(all_predictions.astype(int))
@@ -110,11 +113,15 @@ def startEval(ocrData):
     #         if i[0].lower() == row['text'].lower():
     #             row['colLbl'] = i[1]
     rst_list = []
+    idx =0
     for i in predictions_human_readable:
-        print(i)
+        #print("[" + str(idx) + "]")
+        idx =+ 1
+        # print("[", dix, "]", i)
         obDict = {}
         obDict['text'] = i[0]
         obDict['result'] = i[1]
+        obDict['accuracy'] = accuracy
         rst_list.append(obDict)
         
     #return ocrData

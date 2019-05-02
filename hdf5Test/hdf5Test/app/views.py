@@ -397,68 +397,108 @@ def dbInsertQuery(queryList):
 
 @csrf_exempt
 def mlProcessFnc(request):
-    query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
-    result = dbSelectQuery(query)
-    modelNumberList = []
-    if(result):
-        for row in result:
-            modelNumber = DomainDicMain.run(row[0])
-            modelNumberList.append(modelNumber)
+    data = {
+                'success': False
+            }
+    try:
+        query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
+        result = dbSelectQuery(query)
+        modelNumberList = []
+        if(result):
+            #for row in result:
+                #modelNumber = DomainDicMain.run(row[0])
+                #modelNumberList.append(modelNumber)
         
-        data_file_path__ = 'app/cnn/data/kkk.cls'
-        col_file_Path__ = 'app/cnn/data/kkk.train'
-
-        with open(data_file_path__, 'rb') as data:
-            col_list = [l.decode('utf8', 'ignore') for l in data.readlines()]
-        
-        with open(col_file_Path__, 'rb') as data:
-            train_list = [l.decode('utf8', 'ignore') for l in data.readlines()]
-
-        file = open(col_file_Path__, 'a', -1, encoding='UTF8')
-        new_col_list = []
-        for item in result:
-            if any(item[0] in s for s in train_list):
-                continue
-            else:
-                is_in = False
-                col_val = ""
-                for cvalue in col_list:
-                    if cvalue in item[0]:
-                        isIn = True
-                        col_val = cvalue
-
-                #if is_in:
-                    #file.write("\n" + item[0] + "," + col_val)
-                    #train_list.append(item[0] + "," + col_val + "\n")
-                #else:
-                    #file.write("\n" + item[0] + ",etc")
-                    #train_list.append(item[0] + ",etc" + "\n")
-
-        file.close()
+            data_file_path__ = 'app/cnn/data/kkk.cls'
+            col_file_Path__ = 'app/cnn/data/kkk.train'
             
-        eval_list = []
-        for fil in train_list:
-            obDict = {}
-            obDict['text'] = fil.replace("\n", "").split(",")[0]
-            obDict['location'] = fil.replace("\n", "").split(",")[1]
-            eval_list.append(obDict)
+            #with open(data_file_path__, 'rb') as data:
+            #    col_list = [l.decode('utf8', 'ignore') for l in data.readlines()]
+        
+            #with open(col_file_Path__, 'rb') as data:
+            #    train_list = [l.decode('utf8', 'ignore') for l in data.readlines()]
+                
+            #file = open(col_file_Path__, 'a', -1, encoding='UTF8')
+            #file_cls = open(data_file_path__, 'a', -1, encoding='UTF8')
+            #new_col_list = []
+            #new_val_list = False
+            #for item in result:
+            #    rep_item = item[0].strip().replace(",","")
+            #    if any(item[0] in s for s in train_list):
+            #        continue
+            #    else:
+            #        is_in = False
+            #        col_val = ""
+            #        for cvalue in col_list:
+            #            cvalue = cvalue.replace("\n","").replace("\r","")
+            #            if cvalue in rep_item:
+            #                is_in = True
+            #                col_val = cvalue
 
-        #train.startTrain()
-        rst_list = eval.startEval(eval_list)
+            #        if is_in:
+            #            file.write("\n" + rep_item + "," + col_val)
+            #            train_list.append(rep_item + "," + col_val)
+            #            new_val_list = True
+            #        else:
+                        
+            #            if "HANKOOK" in rep_item:
+            #                file.write("\n" + rep_item + ",한국타이어")
+            #                new_col_list.append("hankook")
+            #                col_list.append("hankook")
+            #                continue
 
-        data = {
-            'success': True,
-            'modelNumberList': modelNumberList, 
-            'rst_list' : rst_list
-        }
-    else:
-        data = {
-            'success': False    
-        }
+            #            endIndex = -1
+            #            if rep_item[0] == '[':
+            #                for idx, str in enumerate(item[0]):
+            #                    if str == ']':
+            #                        endIndex = idx
+            #                        break
+                        
+            #            if endIndex==-1:
+            #                file.write("\n" + rep_item + ",etc")
+            #            else:
+            #                companyName = rep_item[1:endIndex]
+            #                if companyName not in new_col_list:
+            #                    file.write("\n" + rep_item + "," + companyName)
+            #                    file_cls.write("\n" + companyName)
+            #                    new_col_list.append(companyName)
+            #                    col_list.append(companyName)
+            #                #train_list.append(item[0] + ",etc" + "\n")
+            #file.close()
+            #file_cls.close()
 
-    return JsonResponse(data)
+            #eval_list = []
+            #for fil in train_list:
+            #    obDict = {}
+            #    obDict['text'] = fil.replace("\n", "").split(",")[0]
+            #    obDict['location'] = fil.replace("\n", "").split(",")[1]
+            #    eval_list.append(obDict)
 
+            #if (len(new_col_list)>0 or new_val_list):
+            #    train.startTrain()
+            #train.startTrain()
+            #rst_list = eval.startEval(eval_list)
+            eval_list = []
+            for item in result:
+                rep_item = item[0].strip().replace(",","")
+                obDict = {}
+                obDict['text'] = rep_item
+                eval_list.append(obDict)
 
+            rst_list = eval.startEval(eval_list)
+
+            data = {
+                'success': True,
+                'modelNumberList': modelNumberList, 
+                'rst_list' : rst_list
+            }
+        else:
+            print(e)
+    except Exception as e:
+        print(e)
+    finally:
+        return JsonResponse(data)
+    
 def dbSelectQuery(query):
     try :
         conn = pg2.connect(DB_CONN_INFO)

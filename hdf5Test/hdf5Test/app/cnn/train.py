@@ -37,6 +37,10 @@ def startTrain():
     data_loader.define_flags()
 
     FLAGS = tf.flags.FLAGS
+    tmp_list = []
+    tmp_list.append(sys.argv[0])
+    #FLAGS(sys.argv)
+    FLAGS(tmp_list)
     # FLAGS._parse_flags()
     # FLAGS(sys.argv)
     print("\nParameters:")

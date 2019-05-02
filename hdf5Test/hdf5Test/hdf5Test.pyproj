@@ -81,6 +81,9 @@
     <Content Include="app\cnn\.idea\misc.xml" />
     <Content Include="app\cnn\.idea\modules.xml" />
     <Content Include="app\cnn\.idea\workspace.xml" />
+    <Content Include="app\cnn\data\kkk - Copy.cls" />
+    <Content Include="app\cnn\data\kkk - Copy.dev" />
+    <Content Include="app\cnn\data\kkk - Copy.train" />
     <Content Include="app\cnn\data\kkk.cls" />
     <Content Include="app\cnn\data\kkk.dev" />
     <Content Include="app\cnn\data\kkk.train" />

@@ -101,7 +101,7 @@ class MultiClassDataLoader(object):
             for row in ocrData:
                 data = self.__data_processor.clean_data(row['text'])
                 x_text.append(data)
-                y.append((class_vectors['DYNAPRO']))
+                y.append((class_vectors['etc']))
             return [x_text, np.array(y)]
         except Exception as e:
             print(e)
@@ -110,7 +110,8 @@ class MultiClassDataLoader(object):
     def __classes(self):
         self.__resolve_params()
         if self.__classes_cache is None:
-            with open(self.__class_data_file, 'r') as catin:
+            # with open(self.__class_data_file, 'r') as catin:
+            with open(self.__class_data_file, 'r', encoding="utf-8") as catin:
                 classes = list(catin.readlines())
                 self.__classes_cache = [s.strip() for s in classes]
         return self.__classes_cache
