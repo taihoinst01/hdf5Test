@@ -84,8 +84,7 @@
                     $('#loadingImg').show();
                 },
                 success: function (data) {
-                    $('#loadingImg').hide();
-                    $('#mask').hide();
+                    
                     if (data.success) {
                         var crawlerResultList = data.crawlerResultList;
                         var appendListHtml = '';
@@ -101,7 +100,8 @@
                             appendListHtml += '</tr>';
                         }
                         $('#tbody_crawlerResultList').append(appendListHtml);
-
+                        $('#loadingImg').hide();
+                        $('#mask').hide();
                     } else {
 
                     }
@@ -179,8 +179,7 @@
                     $('#loadingImg').show();
                 },
                 success: function (data) {
-                    $('#loadingImg').hide();
-                    $('#mask').hide();
+                    
                     console.log(data);
                     if (data.success) {
                         console.log("들어옴");
@@ -202,6 +201,9 @@
                         })
                         
                     }
+
+                    $('#loadingImg').hide();
+                    $('#mask').hide();
                 },
                 error: function (e) {
                     $('#loadingImg').hide();

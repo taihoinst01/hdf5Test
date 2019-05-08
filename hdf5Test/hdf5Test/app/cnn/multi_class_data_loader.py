@@ -74,7 +74,7 @@ class MultiClassDataLoader(object):
         try:
             x_text = []
             y = []
-            with open(data_file, 'r', encoding="utf-8") as tsvin:
+            with open(data_file, 'r', encoding="utf-8-sig") as tsvin:
                 classes = self.__classes()
                 one_hot_vectors = np.eye(len(classes), dtype=int)
                 class_vectors = {}
@@ -111,7 +111,7 @@ class MultiClassDataLoader(object):
         self.__resolve_params()
         if self.__classes_cache is None:
             # with open(self.__class_data_file, 'r') as catin:
-            with open(self.__class_data_file, 'r', encoding="utf-8") as catin:
+            with open(self.__class_data_file, 'r', encoding="utf-8-sig") as catin:
                 classes = list(catin.readlines())
                 self.__classes_cache = [s.strip() for s in classes]
         return self.__classes_cache
