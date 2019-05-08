@@ -370,8 +370,8 @@ def uploadExcelFnc(request):
         worksheet = load_workbook('c:/pythonFiles' + '\\' + filename, data_only=True).worksheets[0]
         queryList = []
         for column in worksheet.iter_rows(min_row=2):
-            sentence = column[2].value
-            if sentence is None:
+            sentence = str(column[4].value)
+            if column[0] is None:
                 break
             queryList.append('INSERT INTO public.\"TBL_CRAWLER_RESULT_LIST\"(\"SENTENCE\") VALUES (\'' + sentence + '\');')
 

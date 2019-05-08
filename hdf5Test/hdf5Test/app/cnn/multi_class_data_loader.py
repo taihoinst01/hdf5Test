@@ -101,7 +101,7 @@ class MultiClassDataLoader(object):
             for row in ocrData:
                 data = self.__data_processor.clean_data(row['text'])
                 x_text.append(data)
-                y.append((class_vectors['etc']))
+                y.append((class_vectors['OTHER']))
             return [x_text, np.array(y)]
         except Exception as e:
             print(e)
