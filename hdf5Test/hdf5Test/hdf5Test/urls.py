@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^crawlerML/uploadExcel', app.views.uploadExcelFnc, name='uploadExcelFnc'),
     url(r'^crawlerML/mlProcess', app.views.mlProcessFnc, name='mlProcessFnc'),
     url(r'^crawlerML/mlexcelexport', app.views.mlexcelexport, name='mlexcelexport'),
+    url(r'^crawlerML/deleteCrawlerResultList', app.views.deleteCrawlerResultList, name='deleteCrawlerResultList'),
 
     url(r'^login/$',
         django.contrib.auth.views.login,

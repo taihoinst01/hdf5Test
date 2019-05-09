@@ -38,7 +38,7 @@
 				</div>
 
 				<div style="height:600px; overflow-y:scroll;">
-					<table>
+					<table id="excelExportD">
                         <colgroup>
                             <col style="width:50px;">
                             <col style="width:200px;">
@@ -57,6 +57,7 @@
 
 		</div>
 
+        <button type="button" id="deleteBtn" class="btn_green">DELETE</button>
 		<div class="fr">
             <form action="crawlerML/uploadExcel" method="post" enctype="multipart/form-data" id="excelUploadForm" style="display:inline-block">{% csrf_token %}
                 <label>
@@ -80,6 +81,8 @@
                 url: "/crawlerML/getCrawlerResultList",
                 data: {},
                 beforeSend: function () {
+                    $('#tbody_crawlerResultList').empty();
+                    $('#checkAll').prop('checked', false);
                     wrapWindowByMask();
                     $('#loadingImg').show();
                 },
@@ -90,7 +93,7 @@
                         var appendListHtml = '';
                         for (var i = 0; i < crawlerResultList.length; i++) {
                             appendListHtml += '<tr>';
-                            appendListHtml += '<td><input type="checkbox" class="checkSingle" /></td>';
+                            appendListHtml += '<td><input type="checkbox" class="checkSingle" name="checkSingle"/></td>';
                             appendListHtml += '<td>' + crawlerResultList[i][0] +'</td>';
                             appendListHtml += '<td class="sentence">' + crawlerResultList[i][1] + '</td>';
                             appendListHtml += '<td></td>';
@@ -125,22 +128,6 @@
             $('#excelImportIpt').click();
         })
 
-        $('#excelexporttBtn').click(function () {
-            $.ajax({
-                type: "POST",
-                url: "/crawlerML/mlexcelexport/",
-                data: {},
-                beforeSend: function () {
-                    wrapWindowByMask();
-                    $('#loadingImg').show();
-                },
-                success: function (data) {
-                    $('#loadingImg').hide();
-                    $('#mask').hide();
-                    alert('엑셀성공하였습니다.\n 경로는 c:/pythonFiles 입니다.')
-                } 
-            });
-        })
         $('#excelImportIpt').on('change', function () {
             $('#excelUploadForm').submit();
         })
@@ -211,6 +198,65 @@
                     $('#mask').hide();
                 }
             });
+        })
+
+        $("#excelexporttBtn").click(function () {
+
+            if ($("#excelExportD").find('tr').length == 0) {
+                alert("데이터가 존재하지 않습니다");
+            } else {
+
+                alert('시간이 다소 걸릴 수 있습니다.');
+  
+                $("#excelExportD").table2excel({
+                    name: "Worksheet Name",
+                    filename: 'list',
+                    fileext: ".xls"
+                });
+            }
+            
+        });
+
+        $('#deleteBtn').click(function () {
+            var checkList = $('input:checkbox[name=checkSingle]:checked');
+
+            if (checkList.length != 0) {
+                if (confirm("체크된 항목들을 삭제하시겠습니까?")) {
+                    var seqList = [];
+                    checkList.each(function (index) {
+                        var seq = $(this).closest('td').next().text();
+                        seqList.push(seq);
+                    })
+                    param = {
+                        'seqList': seqList
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "/crawlerML/deleteCrawlerResultList",
+                        data: JSON.stringify(param),
+                        beforeSend: function () {
+                            wrapWindowByMask();
+                            $('#loadingImg').show();
+                        },
+                        success: function (data) {
+
+                            if (data.success) {
+                                alert("데이터가 삭제 됐습니다");
+                                getCrawlerResultList();
+                            } else {
+                                alert("데이터 삭제를 실패하였습니다");
+                            }
+                        },
+                        error: function (e) {
+                            $('#loadingImg').hide();
+                            $('#mask').hide();
+                        }
+                    });
+                }
+            } else {
+                alert("체크된 항목이 없습니다.")
+            }
         })
     });
 

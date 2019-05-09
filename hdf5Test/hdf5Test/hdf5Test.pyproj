@@ -107,6 +107,7 @@
     <Content Include="app\cnn\__pycache__\multi_class_data_loader.cpython-36.pyc" />
     <Content Include="app\cnn\__pycache__\text_cnn.cpython-36.pyc" />
     <Content Include="app\cnn\__pycache__\word_data_processor.cpython-36.pyc" />
+    <Content Include="app\static\app\scripts\jquery.table2excel.js" />
     <Content Include="app\static\uploads\airport_inside_0001.jpg" />
     <Content Include="app\static\uploads\airport_inside_0002.jpg" />
     <Content Include="app\static\uploads\airport_inside_0003.jpg" />

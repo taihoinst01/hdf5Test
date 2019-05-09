@@ -348,7 +348,7 @@ def getCrawlerResultListFnc(request):
 
         cur.execute('SELECT * FROM public."TBL_CRAWLER_RESULT_LIST";')
         rows = cur.fetchall()
-
+        conn.close()
         data = {
             'success': True,
             'crawlerResultList': rows,
@@ -367,7 +367,7 @@ def uploadExcelFnc(request):
         excel = request.FILES['excel']
         fs = FileSystemStorage()
         filename = fs.save(excel.name, excel)
-        worksheet = load_workbook('c:/pythonFiles' + '\\' + filename, data_only=True).worksheets[0]
+        worksheet = load_workbook(settings.BASE_DIR + '\\' + filename, data_only=True).worksheets[0]
         queryList = []
         for column in worksheet.iter_rows(min_row=2):
             sentence = str(column[4].value)
@@ -571,6 +571,25 @@ def mlProcessFnc(request):
     finally:
         return JsonResponse(data)
     
+@csrf_exempt
+def deleteCrawlerResultList(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    seqList = body['seqList']
+
+    queryList = [];
+    for seq in seqList:
+        query = 'DELETE FROM public."TBL_CRAWLER_RESULT_LIST" WHERE "SEQ" =' + seq + ';'
+        queryList.append(query)
+
+    result = deDeleteQuery(queryList)
+
+    data = {
+            'success': result
+    }
+
+    return JsonResponse(data)
+
 def dbSelectQuery(query):
     try :
         conn = pg2.connect(DB_CONN_INFO)
@@ -584,6 +603,25 @@ def dbSelectQuery(query):
         return False
     else:
         return rows
+    finally:
+        if conn:
+            conn.close()
+
+def deDeleteQuery(queryList):
+    try :
+        conn = pg2.connect(DB_CONN_INFO)
+        cur = conn.cursor()
+
+        for query in queryList:
+            cur.execute(query)
+        conn.commit()
+        print ("Record delete successfully")
+
+    except Exception as e:
+        print(e)
+        return False
+    else:
+        return True
     finally:
         if conn:
             conn.close()
