@@ -36,7 +36,7 @@ import psycopg2 as pg2 #DB연동
 from django.core.files.storage import FileSystemStorage #파일 저장
 from openpyxl import load_workbook #excel 읽기
 from django.conf import settings
-from .module import DomainDicMain
+from .similar import Similar
 from pandas import DataFrame
 
 DB_CONN_INFO = "host=192.168.0.183 dbname=crawler user=taihoinst password=taiho123 port=5432";
@@ -467,10 +467,17 @@ def mlProcessFnc(request):
             }
     try:
         query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
-        result = dbSelectQuery(query)
-        modelNumberList = []
-        if(result):
-            #for row in result:
+        sentenceList = dbSelectQuery(query)
+
+        query = 'SELECT "modelnumber" FROM public."TBL_CRAWLER_MODELNUMBER";'
+        modelNumberList = dbSelectQuery(query)
+
+        if(sentenceList):
+            similarResult = [] # [(모델넘버, 정확도)]
+            for sentence in sentenceList:
+                similarResult.append(Similar.run(sentence, modelNumberList))
+            print(similarResult)
+            #for row in sentenceList:
                 #modelNumber = DomainDicMain.run(row[0])
                 #modelNumberList.append(modelNumber)
         
@@ -487,7 +494,7 @@ def mlProcessFnc(request):
             #file_cls = open(data_file_path__, 'a', -1, encoding='UTF8')
             #new_col_list = []
             #new_val_list = False
-            #for item in result:
+            #for item in sentenceList:
             #    rep_item = item[0].strip().replace(",","")
             #    if any(item[0] in s for s in train_list):
             #        continue
@@ -544,7 +551,7 @@ def mlProcessFnc(request):
             #train.startTrain()
             #rst_list = eval.startEval(eval_list)
             eval_list = []
-            for item in result:
+            for item in sentenceList:
                 rep_item = item[0].strip().replace(",","")
                 obDict = {}
                 obDict['text'] = rep_item
@@ -554,7 +561,7 @@ def mlProcessFnc(request):
 
             data = {
                 'success': True,
-                'modelNumberList': modelNumberList, 
+                'modelNumberList': similarResult, 
                 'rst_list' : rst_list
             }
         else:

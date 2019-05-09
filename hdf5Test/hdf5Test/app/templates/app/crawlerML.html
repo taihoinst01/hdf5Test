@@ -96,7 +96,7 @@
                             appendListHtml += '<td></td>';
                             appendListHtml += '<td></td>';
                             appendListHtml += '<td class="modelNumber"></td>';
-                            appendListHtml += '<td></td>';
+                            appendListHtml += '<td class="modelNumberAcc"></td>';
                             appendListHtml += '</tr>';
                         }
                         $('#tbody_crawlerResultList').append(appendListHtml);
@@ -183,13 +183,14 @@
                     console.log(data);
                     if (data.success) {
                         console.log("들어옴");
-                        /*
+                        
                         var modelNumberList = data.modelNumberList;
                         var rows = $('#tbody_crawlerResultList tr');
                         rows.each(function (index) {
-                            $(this).find('.modelNumber').html(modelNumberList[index]);
+                            $(this).find('.modelNumber').html(modelNumberList[index].modelnumber);
+                            $(this).find('.modelNumberAcc').html(modelNumberList[index].maxRatio.toFixed(3));
                         })
-                        */
+                        
                         $('#tbody_crawlerResultList').find('tr').each(function () {
                             var text = $(this).children().eq(2).text().toLowerCase().split(",").join("");;
                             for (var i = 0; i < data.rst_list.length; i++) {

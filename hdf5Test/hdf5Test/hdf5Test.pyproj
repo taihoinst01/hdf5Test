@@ -39,6 +39,9 @@
     <Compile Include="app\cnn\text_cnn.py" />
     <Compile Include="app\cnn\train.py" />
     <Compile Include="app\cnn\word_data_processor.py" />
+    <Compile Include="app\similar\Similar.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="app\tests.py" />
     <Compile Include="app\views.py" />
     <Compile Include="app\__init__.py" />
@@ -52,6 +55,7 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\migrations\" />
+    <Folder Include="app\similar\" />
     <Folder Include="app\static\" />
     <Folder Include="app\static\app\" />
     <Folder Include="app\static\app\content\" />
