@@ -2,7 +2,7 @@
 
 It is slightly simplified implementation of Kim's [Convolutional Neural Networks for Sentence Classification](http://arxiv.org/abs/1408.5882) paper in Tensorflow.
 
-한글로 소개한 문서는 [합성곱 신경망(CNN) 딥러닝을 이용한 한국어 문장 분류](http://docs.likejazz.com/cnn-text-classification-tf)를 참고하시기 바랍니다
+?��?�??�개??문서??[?�성�??�경�?CNN) ?�러?�을 ?�용???�국??문장 분류](http://docs.likejazz.com/cnn-text-classification-tf)�?참고?�시�?바랍?�다
 
 ## Requirements
 

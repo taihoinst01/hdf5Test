@@ -1,21 +1,23 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import json
 
 import tensorflow as tf
 import numpy as np
 import os
-#from .cnn import data_helpers
+from .data_helpers import batch_iter
 from .multi_class_data_loader import MultiClassDataLoader
 from .word_data_processor import WordDataProcessor
 import csv
 import sys
+from sklearn import metrics
 
 def startEval(ocrData):
     # Parameters
     # ==================================================
     del_all_flags(tf.flags.FLAGS)
-    #[{'text': 'DYNAPRO ATM RF10,DYNAPRO\n'}, {'text': 'KINERGY 4S H740,KINERGY\n'}, {'text': 'KINERGY 4S2 H750,KINERGY\n'}, {'text': 'KINERGY ECO K425,KINERGY\n'}, {'text': 'KINERGY ECO2 K435,KINERGY\n'}, {'text': 'VENTUS S1 EVO2 K117,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 K117...,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 K117...,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 K117...,VENTUS\n'}, {'text': 'VENTUS S1 EVO2 SUV ...,VENTUS\n'}, {'text': 'VENTUS S1 EVO3 K127,VENTUS\n'}, {'text': 'VENTUS S1 NOBLE2 H4...,VENTUS\n'}, {'text': 'VENTUS S1 NOBLE2+ H...,VENTUS\n'}, {'text': 'VENTUS S2 AS H462,VENTUS\n'}, ...]
+
     # ocrData = json.loads('[{"location":"1018,240,411,87","text":"APEX"},{"location":"1019,338,409,23","text":"Partner of Choice"},{"location":"1562,509,178,25","text":"Voucher No"},{"location":"1562,578,206,25","text":"Voucher Date"},{"location":"206,691,274,27","text":"4153 Korean Re"},{"location":"208,756,525,34","text":"Proportional Treaty Statement"},{"location":"1842,506,344,25","text":"BV/HEO/2018/05/0626"},{"location":"1840,575,169,25","text":"01105/2018"},{"location":"206,848,111,24","text":"Cedant"},{"location":"206,908,285,24","text":"Class of Business"},{"location":"210,963,272,26","text":"Period of Quarter"},{"location":"207,1017,252,31","text":"Period of Treaty"},{"location":"206,1066,227,24","text":"Our Reference"},{"location":"226,1174,145,31","text":"Currency"},{"location":"227,1243,139,24","text":"Premium"},{"location":"226,1303,197,24","text":"Commission"},{"location":"226,1366,107,24","text":"Claims"},{"location":"227,1426,126,24","text":"Reserve"},{"location":"227,1489,123,24","text":"Release"},{"location":"227,1549,117,24","text":"Interest"},{"location":"227,1609,161,31","text":"Brokerage"},{"location":"233,1678,134,24","text":"Portfolio"},{"location":"227,1781,124,24","text":"Balance"},{"location":"574,847,492,32","text":": Solidarity- First Insurance 2018"},{"location":"574,907,568,32","text":": Marine Cargo Surplus 2018 - Inward"},{"location":"598,959,433,25","text":"01-01-2018 TO 31-03-2018"},{"location":"574,1010,454,25","text":": 01-01-2018 TO 31-12-2018"},{"location":"574,1065,304,25","text":": APEX/BORD/2727"},{"location":"629,1173,171,25","text":"JOD 1.00"},{"location":"639,1239,83,25","text":"25.53"},{"location":"639,1299,64,25","text":"5.74"},{"location":"639,1362,64,25","text":"0.00"},{"location":"639,1422,64,25","text":"7.66"},{"location":"639,1485,64,25","text":"0.00"},{"location":"639,1545,64,25","text":"0.00"},{"location":"639,1605,64,25","text":"0.64"},{"location":"648,1677,64,25","text":"0.00"},{"location":"641,1774,81,25","text":"11 .49"},{"location":"1706,1908,356,29","text":"APEX INSURANCE"}]')
     # Eval Parameters
     tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
@@ -30,24 +32,27 @@ def startEval(ocrData):
     data_loader.define_flags()
 
     FLAGS = tf.flags.FLAGS
-    #FLAGS._parse_flags()
+    # FLAGS._parse_flags()
     tmp_list = []
     tmp_list.append(sys.argv[0])
     #FLAGS(sys.argv)
     FLAGS(tmp_list)
+
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))
     print("")
 
+    datasets = None
+
     if FLAGS.eval_train:
-        x_raw, y_test = data_loader.load_data_and_labels()
+        x_raw, y_test, datasets = data_loader.load_data_and_labels()
         y_test = np.argmax(y_test, axis=1)
+        print("Total number of test examples: {}".format(len(y_test)))
     else:
-        # x_raw, y_test = data_loader.load_dev_data_and_labels()
+        #x_raw, y_test, datasets = data_loader.load_dev_data_and_labels()
         x_raw, y_test = data_loader.load_dev_data_and_labels_json(ocrData)
         y_test = np.argmax(y_test, axis=1)
-    #app/cnn/data/kkk.cls
     # checkpoint_dir이 없다면 가장 최근 dir 추출하여 셋팅
     if FLAGS.checkpoint_dir == "":
         all_subdirs = ["app/cnn/runs/" + d for d in os.listdir('app/cnn/runs/.') if os.path.isdir("app/cnn/runs/" + d)]
@@ -65,6 +70,8 @@ def startEval(ocrData):
     # ==================================================
     checkpoint_file = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
     graph = tf.Graph()
+
+
     with graph.as_default():
         session_conf = tf.ConfigProto(
           allow_soft_placement=FLAGS.allow_soft_placement,
@@ -77,58 +84,90 @@ def startEval(ocrData):
 
             # Get the placeholders from the graph by name
             input_x = graph.get_operation_by_name("input_x").outputs[0]
-            # input_y = graph.get_operation_by_name("input_y").outputs[0]
+            input_y = graph.get_operation_by_name("input_y").outputs[0]
             dropout_keep_prob = graph.get_operation_by_name("dropout_keep_prob").outputs[0]
 
+            scores = graph.get_operation_by_name("output/scores").outputs[0]
             # Tensors we want to evaluate
-            predictions = graph.get_operation_by_name("output/predictions").outputs[0]
-
+            predictions = sess.graph.get_operation_by_name("output/predictions").outputs[0]
             # Generate batches for one epoch
             batches = batch_iter(list(x_test), FLAGS.batch_size, 1, shuffle=False)
 
             # Collect the predictions here
             all_predictions = []
+            all_probabilities = None
 
             for x_test_batch in batches:
-                batch_predictions = sess.run(predictions, {input_x: x_test_batch, dropout_keep_prob: 1.0})
-                all_predictions = np.concatenate([all_predictions, batch_predictions])
+                batch_predictions_scores = sess.run([predictions, scores],
+                                                    {input_x: x_test_batch, dropout_keep_prob: 1.0})
+                all_predictions = np.concatenate([all_predictions, batch_predictions_scores[0]])
+                probabilities = softmax(batch_predictions_scores[1])
+                if all_probabilities is not None:
+                    all_probabilities = np.concatenate([all_probabilities, probabilities])
+                else:
+                    all_probabilities = probabilities
 
-    # Print accuracy if y_test is defined
-    
-    if y_test is not None:
-        correct_predictions = float(sum(all_predictions == y_test))
-        print("Total number of test examples: {}".format(len(y_test)))
-        accuracy = round(correct_predictions/float(len(y_test)), 3)
-        print("Accuracy: {:g}".format(correct_predictions/float(len(y_test))))
-
+    #if y_test is not None:
+        #correct_predictions = float(sum(all_predictions == y_test))
+        #print("Total number of test examples: {}".format(len(y_test)))
+        #print("Accuracy: {:g}".format(correct_predictions / float(len(y_test))))
+        #print(y_test.shape, all_predictions.shape)
+        #print(metrics.classification_report(y_test, all_predictions, target_names=datasets))
+        #print(metrics.confusion_matrix(y_test, all_predictions))
 
     # Save the evaluation to a csv
-    class_predictions = data_loader.class_labels(all_predictions.astype(int))
-    predictions_human_readable = np.column_stack((np.array(x_raw), class_predictions))
-    out_path = os.path.join(FLAGS.checkpoint_dir, "../../../", "prediction.csv")
-    print("Saving evaluation to {0}".format(out_path))
+    predictions_human_readable = np.column_stack((np.array(x_raw),
+                                                  [int(prediction) for prediction in all_predictions],
+                                                  ["{}".format(probability) for probability in all_probabilities]))
+    out_path = os.path.join(FLAGS.checkpoint_dir, "..", "prediction.csv")
+    #predictions_human_readable = np.squeeze(predictions_human_readable)
 
-    # for i in predictions_human_readable:
-    #     for row in ocrData:
-    #         if i[0].lower() == row['text'].lower():
-    #             row['colLbl'] = i[1]
+    #print(predictions_human_readable)
+
+    print("Saving evaluation to {0}".format(out_path))
+    #with open(out_path, 'w') as f:
+        #csv.writer(f).writerows(predictions_human_readable)
     rst_list = []
-    idx =0
-    for i in predictions_human_readable:
-        #print("[" + str(idx) + "]")
-        idx =+ 1
-        # print("[", dix, "]", i)
+
+    f = open('app/cnn/data/kkk.cls', 'r')
+    strList = f.readlines()
+
+    for data in predictions_human_readable:
         obDict = {}
-        obDict['text'] = i[0]
-        obDict['result'] = i[1]
-        obDict['accuracy'] = accuracy
+        obDict['text'] = data[0]
+        obDict['result'] = strList[int(data[1])].rstrip('\n')
+        accuracy = data[2].strip('[]').split(' ')
+        if accuracy[1] == '':
+            if format(float(accuracy[0]), '.8f') > format(float(accuracy[2]), '.8f'):
+                obDict['accuracy'] = format(float(accuracy[0]), '.8f')
+            else:
+                obDict['accuracy'] = format(float(accuracy[2]), '.8f')
+        else:
+            if format(float(accuracy[0]), '.8f') > format(float(accuracy[1]), '.8f'):
+                obDict['accuracy'] = format(float(accuracy[0]), '.8f')
+            else:
+                obDict['accuracy'] = format(float(accuracy[1]), '.8f')
         rst_list.append(obDict)
-        
+
     #return ocrData
     return rst_list
 
     # with open(out_path, 'w') as f:
     #     csv.writer(f).writerows(predictions_human_readable)
+def multi_label_hot(prediction, threshold=0.5):
+    prediction = tf.cast(prediction, tf.float32)
+    threshold = float(threshold)
+    return tf.cast(tf.greater(prediction, threshold), tf.int64)
+
+def softmax(x):
+    """Compute softmax values for each sets of scores in x."""
+    if x.ndim == 1:
+        x = x.reshape((1, -1))
+    max_x = np.max(x, axis=1).reshape((-1, 1))
+    exp_x = np.exp(x - max_x)
+    return exp_x / np.sum(exp_x, axis=1).reshape((-1, 1))
+
+
 
 def del_all_flags(FLAGS):
     flags_dict = FLAGS._flags()
@@ -136,24 +175,6 @@ def del_all_flags(FLAGS):
     for keys in keys_list:
         FLAGS.__delattr__(keys)
 
-def batch_iter(data, batch_size, num_epochs, shuffle=True):
-    """
-    Generates a batch iterator for a dataset.
-    """
-    data = np.array(data)
-    data_size = len(data)
-    num_batches_per_epoch = int(len(data)/batch_size) + 1
-    for epoch in range(num_epochs):
-        # Shuffle the data at each epoch
-        if shuffle:
-            shuffle_indices = np.random.permutation(np.arange(data_size))
-            shuffled_data = data[shuffle_indices]
-        else:
-            shuffled_data = data
-        for batch_num in range(num_batches_per_epoch):
-            start_index = batch_num * batch_size
-            end_index = min((batch_num + 1) * batch_size, data_size)
-            yield shuffled_data[start_index:end_index]
 
 #if __name__ == '__main__':
-    #startEval('test')
+#    startEval('test')

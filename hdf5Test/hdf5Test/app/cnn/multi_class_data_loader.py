@@ -18,7 +18,7 @@ class MultiClassDataLoader(object):
         self.__class_data_file = None
         self.__classes_cache = None
 
-#C:\Users\dyyoo\Desktop\바탕화면\소장님\18.빅데이터\cnn\data
+
     def define_flags(self):
         self.__flags.DEFINE_string("train_data_file", "app/cnn/data/kkk.train", "Data source for the training data.")
         self.__flags.DEFINE_string("dev_data_file", "app/cnn/data/kkk.dev", "Data source for the cross validation data.")
@@ -39,7 +39,7 @@ class MultiClassDataLoader(object):
             x_train = np.array(list(self.vocab_processor.fit_transform(x_train)))
             # Build vocabulary
             x_dev = np.array(list(self.vocab_processor.fit_transform(x_dev)))
-            return [x_train, y_train, x_dev, y_dev]
+            return [x_train, y_train, x_dev, y_dev, self.__classes()]
         except Exception as e:
             print(e)
 
@@ -55,7 +55,7 @@ class MultiClassDataLoader(object):
     def load_dev_data_and_labels(self):
         self.__resolve_params()
         x_dev, y_dev = self.__load_data_and_labels(self.__dev_data_file)
-        return [x_dev, y_dev]
+        return [x_dev, y_dev, self.__classes()]
 
     def load_dev_data_and_labels_json(self, ocrData):
         self.__resolve_params()
@@ -68,7 +68,7 @@ class MultiClassDataLoader(object):
         x_dev, y_dev = self.__load_data_and_labels(self.__dev_data_file)
         x_all = x_train + x_dev
         y_all = np.concatenate([y_train, y_dev], 0)
-        return [x_all, y_all]
+        return [x_all, y_all, self.__classes()]
 
     def __load_data_and_labels(self, data_file):
         try:
@@ -110,8 +110,7 @@ class MultiClassDataLoader(object):
     def __classes(self):
         self.__resolve_params()
         if self.__classes_cache is None:
-            # with open(self.__class_data_file, 'r') as catin:
-            with open(self.__class_data_file, 'r', encoding="utf-8-sig") as catin:
+            with open(self.__class_data_file, 'r') as catin:
                 classes = list(catin.readlines())
                 self.__classes_cache = [s.strip() for s in classes]
         return self.__classes_cache

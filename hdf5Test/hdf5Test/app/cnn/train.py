@@ -5,8 +5,7 @@ import tensorflow as tf
 import os
 import time
 import datetime
-import numpy as np
-
+from .data_helpers import batch_iter
 from .text_cnn import TextCNN
 from .multi_class_data_loader import MultiClassDataLoader
 from .word_data_processor import WordDataProcessor
@@ -37,12 +36,11 @@ def startTrain():
     data_loader.define_flags()
 
     FLAGS = tf.flags.FLAGS
+    # FLAGS._parse_flags()
     tmp_list = []
     tmp_list.append(sys.argv[0])
     #FLAGS(sys.argv)
     FLAGS(tmp_list)
-    # FLAGS._parse_flags()
-    # FLAGS(sys.argv)
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))
@@ -54,7 +52,7 @@ def startTrain():
 
     # Load data
     print("Loading data...")
-    x_train, y_train, x_dev, y_dev = data_loader.prepare_data()
+    x_train, y_train, x_dev, y_dev, classes= data_loader.prepare_data()
     vocab_processor = data_loader.vocab_processor
 
     print("Vocabulary Size: {:d}".format(len(vocab_processor.vocabulary_)))
@@ -182,25 +180,5 @@ def del_all_flags(FLAGS):
     for keys in keys_list:
         FLAGS.__delattr__(keys)
 
-def batch_iter(data, batch_size, num_epochs, shuffle=True):
-    """
-    Generates a batch iterator for a dataset.
-    """
-    data = np.array(data)
-    data_size = len(data)
-    num_batches_per_epoch = int(len(data)/batch_size) + 1
-    for epoch in range(num_epochs):
-        # Shuffle the data at each epoch
-        if shuffle:
-            shuffle_indices = np.random.permutation(np.arange(data_size))
-            shuffled_data = data[shuffle_indices]
-        else:
-            shuffled_data = data
-        for batch_num in range(num_batches_per_epoch):
-            start_index = batch_num * batch_size
-            end_index = min((batch_num + 1) * batch_size, data_size)
-            yield shuffled_data[start_index:end_index]
-            
 #if __name__ == '__main__':
-    #print("dddd")
-    #startTrain()
+#    startTrain()

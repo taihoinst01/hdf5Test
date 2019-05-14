@@ -183,7 +183,7 @@
                             for (var i = 0; i < data.rst_list.length; i++) {
                                 if (text == data.rst_list[i].text.toLowerCase()) {
                                     $(this).children().eq(3).text(data.rst_list[i].result);
-                                    $(this).children().eq(4).text(data.rst_list[i].accuracy);
+                                    $(this).children().eq(4).text(data.rst_list[i].accuracy.substring(0, 5));
                                 }
                             }
                         })
