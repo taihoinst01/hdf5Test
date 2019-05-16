@@ -368,14 +368,27 @@ def uploadExcelFnc(request):
         fs = FileSystemStorage()
         filename = fs.save(excel.name, excel)
         worksheet = load_workbook(settings.BASE_DIR + '\\' + filename, data_only=True).worksheets[0]
-        queryList = []
+        valuesList = []
+        exlist = []
         for column in worksheet.iter_rows(min_row=2):
-            sentence = str(column[4].value)
+            sentence = str(column[0].value) + ' ' + str(column[1].value)
             if column[0].value is None:
                 break
-            queryList.append('INSERT INTO public.\"TBL_CRAWLER_RESULT_LIST\"(\"SENTENCE\") VALUES (\'' + sentence + '\');')
-
-        result = dbInsertQuery(queryList)
+            value = (sentence, )
+            #exlist.append(sentence + '^' + str(column[4].value))
+            valuesList.append(value);
+        #print(list(set(exlist)))
+        #exlist = list(set(exlist))
+        #f = open('dev.txt', 'w', encoding='utf-8-sig')
+        #cnt = 0
+        #for i in exlist:
+            #str1 = 'INSERT INTO public."TBL_CRAWLER_MODELNUMBER"(modelnumber) VALUES (\'' + i +'\')'
+            #print(i)
+            #f.write(i  + '\n')
+            #cnt = cnt + 1
+        #f.close()
+        query = "INSERT INTO public.\"TBL_CRAWLER_RESULT_LIST\"(\"SENTENCE\") VALUES (%s)"
+        result = dbInsertQuery2(query, valuesList)
 
         data = {
             'success': result
@@ -439,7 +452,27 @@ def mlexcelexportFnc():
     os.chdir('c:/pythonFiles')
     
 
+def dbInsertQuery2(query, valuesList):
+    try :
+        conn = pg2.connect(DB_CONN_INFO)
+        cur = conn.cursor()
+        i = 0
+        #for values in valuesList:
+        #    i = i + 1
+        #    print(i)
+        #print(values)
+        cur.executemany(query, valuesList)
+        conn.commit()
+        print ("Record inserted successfully")
 
+    except Exception as e:
+        print(e)
+        return False
+    else:
+        return True
+    finally:
+        if conn:
+            conn.close()
 
 def dbInsertQuery(queryList):
     try :

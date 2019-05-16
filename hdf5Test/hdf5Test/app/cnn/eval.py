@@ -137,16 +137,7 @@ def startEval(ocrData):
         obDict['text'] = data[0]
         obDict['result'] = strList[int(data[1])].rstrip('\n')
         accuracy = data[2].strip('[]').split(' ')
-        if accuracy[1] == '':
-            if format(float(accuracy[0]), '.8f') > format(float(accuracy[2]), '.8f'):
-                obDict['accuracy'] = format(float(accuracy[0]), '.8f')
-            else:
-                obDict['accuracy'] = format(float(accuracy[2]), '.8f')
-        else:
-            if format(float(accuracy[0]), '.8f') > format(float(accuracy[1]), '.8f'):
-                obDict['accuracy'] = format(float(accuracy[0]), '.8f')
-            else:
-                obDict['accuracy'] = format(float(accuracy[1]), '.8f')
+        obDict['accuracy'] = format(float(accuracy[int(data[1])]), '.8f')
         rst_list.append(obDict)
 
     #return ocrData
