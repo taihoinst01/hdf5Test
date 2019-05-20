@@ -24,23 +24,23 @@
     <div id="div_dtl" class="box_content_T_05">
         <div class="ips_content_sub">
             <div class="first_content_title">
-                <button type="button" id="getImageBtn" class="button_h5 btnK01">GET IMAGE</button>
-                <button type="button" id="makeH5Btn" class="button_h5 btnK01">BUTTEN2</button>
-                <button type="button" id="makeH5Btn" class="button_h5 btnK01">BUTTEN3</button>
-                <button type="button" id="makeH5Btn" class="button_h5 btnK01">BUTTEN4</button>
+                <button type="button" id="getImageBtn" class="btn btn-primary">GET IMAGE</button>
+                <button type="button" id="makeH5Btn" class="btn btn-primary">BUTTEN2</button>
+                <button type="button" id="makeH5Btn" class="btn btn-primary">BUTTEN3</button>
+                <button type="button" id="makeH5Btn" class="btn btn-primary">BUTTEN4</button>
             </div>
             <div class="first_content1">
-                <img src={{ imgVal }} class ="imgTag" id="imgTag1" alt="Test Img1" style=""/>
-
-            </div>
-
-            <div class="first_content1">
-                <img src={{ imgVal }} class ="imgTag" id="imgTag2" alt="Test Img2" style=""/>
+                <img src={{ imgVal }} class ="imgTag" id="imgTag1" style="display:none"/>
 
             </div>
 
             <div class="first_content1">
-                <img src={{ imgVal }} class ="imgTag" id="imgTag3" alt="Test Img3" style=""/>
+                <img src={{ imgVal }} class ="imgTag" id="imgTag2" style="display:none"/>
+
+            </div>
+
+            <div class="first_content1">
+                <img src={{ imgVal }} class ="imgTag" id="imgTag3" style="display:none"/>
 
             </div>
             <!--
@@ -79,6 +79,7 @@
 
                         $('#imgTag1').stop().animate({opacity:'0'},function(){
                             $('#imgTag1').attr('src', src1);
+                            $('.imgTag').show();
                         }).load(function(){
                             $('#imgTag1').stop().animate({opacity:'1'});
                         });

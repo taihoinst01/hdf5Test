@@ -60,24 +60,25 @@
 
 .crawler_keyword_create {
     float: left;
-    border: 1px solid green;
+    border: 1px solid #285e8e;
     margin: 1% 1% 1% 1%;
-    border-radius: 45%;
-    color: green;
+    color: #285e8e;
     padding: 0.3% 1% 0.3% 1%;
 }
 
 .crawler_keyword_insert {
-    background-color:green;
+    background-color: #285e8e;
     margin: 1% 1% 1% 1%;
     border-radius: 15%;
     padding: 0.3% 1% 0.3% 1%;
+    font-weight: bold;
 }
 .crawler_keyword_delete {
-    
+    background-color: indianred;
     margin: 1% 1% 1% 1%;
     border-radius: 15%;
     padding: 0.3% 1% 0.3% 1%;
+    font-weight: bold;
 }
 .crawler_keyword_btn_group {
     

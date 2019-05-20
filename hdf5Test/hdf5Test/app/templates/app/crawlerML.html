@@ -57,16 +57,16 @@
 
 		</div>
 
-        <button type="button" id="deleteBtn" class="btn_green">DELETE</button>
+        <button type="button" id="deleteBtn" class="btn btn-danger">DELETE</button>
 		<div class="fr">
             <form action="crawlerML/uploadExcel" method="post" enctype="multipart/form-data" id="excelUploadForm" style="display:inline-block">{% csrf_token %}
                 <label>
                     <input type="file" id="excelImportIpt" name="excel" style="display:none;"/>
-                    <button type="button" id="excelexporttBtn" class="btn_green">EXCEL EXPORT</button>
-                    <button type="button" id="excelImportBtn" class="btn_green">EXCEL IMPORT</button>
+                    <button type="button" id="excelexporttBtn" class="btn btn-primary">EXCEL EXPORT</button>
+                    <button type="button" id="excelImportBtn" class="btn btn-primary">EXCEL IMPORT</button>
                 </label>
             </form>
-			<button type="button" id="mlProcess" class="btn_green">ML PROCESS</button>
+			<button type="button" id="mlProcess" class="btn btn-primary">ML PROCESS</button>
 		</div>
 	</div>
 </div>

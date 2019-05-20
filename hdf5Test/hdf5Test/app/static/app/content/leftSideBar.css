@@ -3,7 +3,7 @@
     width: 125px;
     /* height: 869px; */
     height: calc(100% - 70px);
-    background-color: #1A1A1A;
+    background-color: #212529;
     display: flex;
     flex-direction: column;
     top: 70px;
@@ -30,10 +30,8 @@ dl, ul, ol, li {
             font-family: 'NanumGothicB';
             text-align: center;
             font-size: 1.3em;
-            background: #3f533f;
-            border-bottom: 0.5px solid #4aae72;
         }
 
-            .lnb-box ul a li:hover {
-                background-color: #4d5059;
-            }
+a:hover {
+    text-decoration: none
+}
