@@ -371,7 +371,7 @@ def uploadExcelFnc(request):
         valuesList = []
         exlist = []
         for column in worksheet.iter_rows(min_row=2):
-            sentence = str(column[0].value) + ' ' + str(column[1].value)
+            sentence = str(column[0].value)
             if column[0].value is None:
                 break
             value = (sentence, )
