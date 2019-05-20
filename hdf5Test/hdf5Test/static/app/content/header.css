@@ -6,7 +6,7 @@
     width: 100%;
     min-width: 1031px;
     height: 70px;
-    background-color: #81BE04;
+    background-color: #343a40 !important;
     z-index: 2;
 }
     #header h1 {
@@ -81,7 +81,7 @@
     width: 33px;
     height: 33px;
     display: inline-block;
-    background-color: #0c5d2d;
+    background-color: #3276b1;
     border-radius: 50%;
     top: 10px;
     position: relative;
