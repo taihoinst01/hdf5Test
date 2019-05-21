@@ -110,7 +110,7 @@ class MultiClassDataLoader(object):
     def __classes(self):
         self.__resolve_params()
         if self.__classes_cache is None:
-            with open(self.__class_data_file, 'r') as catin:
+            with open(self.__class_data_file, 'r', encoding="utf-8-sig") as catin:
                 classes = list(catin.readlines())
                 self.__classes_cache = [s.strip() for s in classes]
         return self.__classes_cache

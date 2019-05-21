@@ -118,7 +118,7 @@ def startEval(ocrData):
     # Save the evaluation to a csv
     predictions_human_readable = np.column_stack((np.array(x_raw),
                                                   [int(prediction) for prediction in all_predictions],
-                                                  ["{}".format(probability) for probability in all_probabilities]))
+                                                  ["%0.3f" % probability.max(axis=None, out=None) for probability in all_probabilities]))
     out_path = os.path.join(FLAGS.checkpoint_dir, "..", "prediction.csv")
     #predictions_human_readable = np.squeeze(predictions_human_readable)
 
@@ -136,8 +136,7 @@ def startEval(ocrData):
         obDict = {}
         obDict['text'] = data[0]
         obDict['result'] = strList[int(data[1])].rstrip('\n')
-        accuracy = data[2].strip('[]').split(' ')
-        obDict['accuracy'] = format(float(str.split(' '.join(accuracy).replace('  ', ' '))[int(data[1])]), '.8f')
+        obDict['accuracy'] = data[2]
         rst_list.append(obDict)
 
     #return ocrData

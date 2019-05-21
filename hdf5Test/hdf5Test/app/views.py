@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .cnn import train
 from .cnn import eval
+from .modelCnn import eval as modelEval
 
 import cv2
 import datetime as dt
@@ -372,9 +373,10 @@ def uploadExcelFnc(request):
         exlist = []
         for column in worksheet.iter_rows(min_row=2):
             sentence = str(column[0].value)
+            sentence2 = str(column[1].value)
             if column[0].value is None:
                 break
-            value = (sentence, )
+            value = (sentence + ' ' + sentence2, )
             #exlist.append(sentence + '^' + str(column[4].value))
             valuesList.append(value);
         #print(list(set(exlist)))
@@ -499,6 +501,7 @@ def mlProcessFnc(request):
                 'success': False
             }
     try:
+        print("start mlProcessFnc")
         query = 'SELECT "SENTENCE" FROM public."TBL_CRAWLER_RESULT_LIST";'
         sentenceList = dbSelectQuery(query)
 
@@ -506,10 +509,10 @@ def mlProcessFnc(request):
         modelNumberList = dbSelectQuery(query)
 
         if(sentenceList):
-            similarResult = [] # [(모델넘버, 정확도)]
-            for sentence in sentenceList:
-                similarResult.append(Similar.run(sentence, modelNumberList))
-            print(similarResult)
+            #similarResult = [] # [(모델넘버, 정확도)]
+            #for sentence in sentenceList:
+            #    similarResult.append(Similar.run(sentence, modelNumberList))
+            #print(similarResult)
             #for row in sentenceList:
                 #modelNumber = DomainDicMain.run(row[0])
                 #modelNumberList.append(modelNumber)
@@ -589,12 +592,13 @@ def mlProcessFnc(request):
                 obDict = {}
                 obDict['text'] = rep_item
                 eval_list.append(obDict)
-
+                
             rst_list = eval.startEval(eval_list)
+            modelRst_list = modelEval.startEval(eval_list)
 
             data = {
                 'success': True,
-                'modelNumberList': similarResult, 
+                'modelNumberList': modelRst_list, 
                 'rst_list' : rst_list
             }
         else:
@@ -602,6 +606,7 @@ def mlProcessFnc(request):
     except Exception as e:
         print(e)
     finally:
+        print("finish mlProcessFnc")
         return JsonResponse(data)
     
 @csrf_exempt
